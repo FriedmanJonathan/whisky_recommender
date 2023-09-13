@@ -11,27 +11,23 @@ from bs4 import BeautifulSoup
 
 
 def scrape_whisky_website(url):
-    # Initialize the Selenium WebDriver
+    # Initialize the Selenium WebDriver and open website
     driver = webdriver.Chrome(service=service, options=options)
-
-    # Open the website
     driver.get(url)
 
     # Initialize an empty list to store data
     data = []
 
     # Scroll down to load more entries (adjust the number of scrolls as needed)
-    num_scrolls = 5  # You may need to adjust this number based on the website
+    num_scrolls = 105  # You may need to adjust this number based on the website
     for i in range(num_scrolls):
         css_selector_name = 'id.content'
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
         driver.execute_script(f"window.scrollBy(0, -{page_height_to_scroll});")
         time.sleep(1.5)  # Allow time for content to load
 
-    # Extract the page source after all entries have loaded
+    # Extract the page source after all entries have loaded and parse with BeautifulSoup
     page_source = driver.page_source
-
-    # Parse the page source with BeautifulSoup
     soup = BeautifulSoup(page_source, 'html.parser')
 
     # Find and process the entries
@@ -64,10 +60,12 @@ def scrape_whisky_website(url):
                     whisky_data['num_ratings'] = rating_parts[1]
 
             # Extract the number of reviews
-            num_reviews_tag = rating_div.find_all('a')[1]
-            if num_reviews_tag:
-                num_reviews_text = num_reviews_tag.text.strip()
-                whisky_data['num_reviews'] = num_reviews_text
+            try:
+                num_reviews_tag = rating_div.find_all('a')[1]
+                if num_reviews_tag:
+                    num_reviews_text = num_reviews_tag.text.strip()
+                    whisky_data['num_reviews'] = num_reviews_text
+            except IndexError: whisky_data['num_reviews'] = ""
 
             data.append(whisky_data)
 
@@ -87,9 +85,7 @@ if __name__ == '__main__':
     whisky_data = scrape_whisky_website(main_url)
 
     # Specify the file path where you want to save the CSV file
-    csv_file_path = "whisky_main_page.csv"  # Replace with your desired file path
+    csv_file_path = "whisky_main_page_with_ratings.csv"  # Replace with your desired file path
 
     # Use the to_csv method to export the DataFrame to a CSV file
-    #whisky_data.to_csv(csv_file_path, index=False)  # Set index to False if you don't want to include the index in the CSV file
-    breakpoint()
-    print(whisky_data)
+    whisky_data.to_csv(csv_file_path, index=False)  # Set index to False if you don't want to include the index in the CSV file

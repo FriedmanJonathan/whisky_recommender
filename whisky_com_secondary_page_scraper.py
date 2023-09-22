@@ -63,6 +63,7 @@ async def scrape_page(url):
                 for note in notes:
                     section_tag = soup.find('div', class_=f"col-md-4 group-divider group group-{note}")
                     feature_name = note + '_notes'
+                    print(url, note)
                     df[feature_name] = extract_notes(section_tag)
 
                 return df
@@ -89,8 +90,12 @@ if __name__ == '__main__':
         inplace=True
     )
 
+    # Remove instances where there are no reviews, since we won't be able to compare notes.
+    # (These are likely rarer whiskies anyway, therefore not easily obtainable to user)
+    whisky_main_page = whisky_main_page.loc[whisky_main_page["num_reviews"] != ""]
+
     # Extract unique URLs from the whisky_link column
-    unique_urls = whisky_main_page['whisky_link'].tolist()[:10]
+    unique_urls = whisky_main_page['whisky_link'].tolist()[:100]
 
     try:
         # Scrape data from multiple pages concurrently
@@ -98,9 +103,10 @@ if __name__ == '__main__':
 
         # Concatenate the DataFrames into one final DataFrame
         whisky_details = pd.concat(scraped_data, ignore_index=True)
-        breakpoint()
         # Print the final DataFrame
-        print(whisky_details)
+        csv_file_path = 'whisky_details_100.csv'
+        whisky_details.to_csv(csv_file_path, index=False)
+        #print(whisky_details)
     finally:
         # Close the event loop
         loop.close()

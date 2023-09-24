@@ -10,15 +10,17 @@ REQUEST_DELAY = 2  # Adjust as needed
 
 def extract_notes(section_tag):
     notes_dict = {}
-    notes_sections = section_tag.find_all('div', class_='tasteicon-statistic')
-    for section in notes_sections:
-        title = section.find('div', class_='title left').text.strip()
+    try:
+        notes_sections = section_tag.find_all('div', class_='tasteicon-statistic')
+        for section in notes_sections:
+            title = section.find('div', class_='title left').text.strip()
 
-        # Extract rating values from HTML comments
-        rating_value_div = section.find('div', class_='items active')
-        rating_value = rating_value_div['style'].split()[1].strip('%;')
-        # Add the extracted data to the tasting_notes dictionary
-        notes_dict[title] = rating_value
+            # Extract rating values from HTML comments
+            rating_value_div = section.find('div', class_='items active')
+            rating_value = rating_value_div['style'].split()[1].strip('%;')
+            # Add the extracted data to the tasting_notes dictionary
+            notes_dict[title] = rating_value
+    except IndexError: pass  # Return just the empty dictionary
     return [notes_dict]
 
 async def scrape_page(url):
@@ -31,9 +33,16 @@ async def scrape_page(url):
 
                 # Extract data as specified
                 distillery_name_inner = soup.find('tr', class_='brennerei').find('a').text.strip()
-                country = soup.find_all('tr', class_='')[1].find_all('a')[0].text.strip()
-                try: region = soup.find_all('tr', class_='')[1].find_all('a')[1].text.strip()
-                except IndexError: region = ""
+                try:
+                    country = soup.find_all('tr', class_='')[1].find_all('a')[0].text.strip()
+                except IndexError:
+                    print(f"Index Error at {url}")
+                    country = ""
+                try:
+                    region = soup.find_all('tr', class_='')[1].find_all('a')[1].text.strip()
+                except IndexError:
+                    print(f"Index Error at {url}")
+                    region = ""
                 whisky_type = soup.find('tr', class_='sorte').find('a').text.strip()
                 try: whisky_age_inner = soup.find('tr', class_='fassnummern').find('span', class_='value').text.strip()
                 except AttributeError: whisky_age_inner = ""

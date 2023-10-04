@@ -11,39 +11,71 @@
         <h1>Whisky Recommender</h1>
     </header>
     <main>
-        <p>This is an explanation of what this page does.</p>
+        <p>Do you know your taste in whisky and are looking to expand your horizons?
+            Want to gift a bottle to a friend but don't know what he would like?
+            Simply input three whiskies  and this app will recommend one just like them!
+            (Please note that the current version compares whiskies using tasting notes
+            alone, with no consideration of age, alcohol percentage, finish etc. Those will
+            be added in a later version :) )
+        </p>
         <h2>Enter Three Whisky Names</h2>
         <form id="whiskyForm">
-            <label for="distillery1">Select Distillery 1:</label>
-                <select id="distillery1" class="distillery-select">
-                    <option value="">Select a distillery</option>
-                </select>
-
-            <label for="whisky1">Select Whisky 1:</label>
-            <select id="whisky1" class="whisky-select">
-                <!-- Options will be dynamically populated based on distillery selection -->
-            </select>
-
-            <label for="distillery2">Select Distillery 2:</label>
-                <select id="distillery2" class="distillery-select">
-                    <option value="">Select a distillery</option>
-                </select>
-
-            <label for="whisky2">Select Whisky 2:</label>
-            <select id="whisky2" class="whisky-select">
-                <!-- Options will be dynamically populated based on distillery selection -->
-            </select>
-
-            <label for="distillery3">Select Distillery 3:</label>
-                <select id="distillery3" class="distillery-select">
-                    <option value="">Select a distillery</option>
-                </select>
-
-            <label for="whisky3">Select Whisky 3:</label>
-            <select id="whisky3" class="whisky-select">
-                <!-- Options will be dynamically populated based on distillery selection -->
-            </select>
-
+            <table>
+                <tr>
+                    <td>
+                        <label for="distillery1">Select Distillery 1:</label>
+                    </td>
+                    <td>
+                        <select id="distillery1" class="distillery-select">
+                            <option value="">Select a distillery</option>
+                        </select>
+                    </td>
+                    <td>
+                        <label for="whisky1">Select Whisky 1:</label>
+                    </td>
+                    <td>
+                        <select id="whisky1" class="whisky-select">
+                            <!-- Options will be dynamically populated based on distillery selection -->
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="distillery2">Select Distillery 2:</label>
+                    </td>
+                    <td>
+                        <select id="distillery2" class="distillery-select">
+                            <option value="">Select a distillery</option>
+                        </select>
+                    </td>
+                    <td>
+                        <label for="whisky2">Select Whisky 2:</label>
+                    </td>
+                    <td>
+                        <select id="whisky2" class="whisky-select">
+                            <!-- Options will be dynamically populated based on distillery selection -->
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="distillery3">Select Distillery 3:</label>
+                    </td>
+                    <td>
+                        <select id="distillery3" class="distillery-select">
+                            <option value="">Select a distillery</option>
+                        </select>
+                    </td>
+                    <td>
+                        <label for="whisky3">Select Whisky 3:</label>
+                    </td>
+                    <td>
+                        <select id="whisky3" class="whisky-select">
+                            <!-- Options will be dynamically populated based on distillery selection -->
+                        </select>
+                    </td>
+                </tr>
+            </table>
             <button type="button" onclick="recommendWhisky()">Recommend</button>
         </form>
         <h2>Recommended Whisky:</h2>

@@ -4,7 +4,7 @@ import pandas as pd
 from bs4 import BeautifulSoup, Comment
 
 # Define the delay between requests (in seconds)
-REQUEST_DELAY = 2  # Adjust as needed
+REQUEST_DELAY = 2.5  # Adjust as needed
 
 # Extract tasting notes
 
@@ -21,6 +21,7 @@ def extract_notes(section_tag):
             # Add the extracted data to the tasting_notes dictionary
             notes_dict[title] = rating_value
     except IndexError: pass  # Return just the empty dictionary
+    except AttributeError: pass  # Same
     return [notes_dict]
 
 async def scrape_page(url):
@@ -36,16 +37,16 @@ async def scrape_page(url):
                 try:
                     country = soup.find_all('tr', class_='')[1].find_all('a')[0].text.strip()
                 except IndexError:
-                    print(f"Index Error at {url}")
+                    print(f"Country Index Error at {url}")
                     country = ""
                 try:
                     region = soup.find_all('tr', class_='')[1].find_all('a')[1].text.strip()
                 except IndexError:
-                    print(f"Index Error at {url}")
+                    print(f"Region Index Error at {url}")
                     region = ""
                 whisky_type = soup.find('tr', class_='sorte').find('a').text.strip()
                 try: whisky_age_inner = soup.find('tr', class_='fassnummern').find('span', class_='value').text.strip()
-                except AttributeError: whisky_age_inner = ""
+                except AttributeError: whisky_age_inner = "NAS" # if no age found, NAS (No Age Statement)
                 alcohol_pct_inner = soup.find('tr', class_='alkoholgehalt').find('span', class_='value').text.strip()
                 bottler = soup.find('tr', class_='abfueller').find('a').text.strip()
 
@@ -104,7 +105,7 @@ if __name__ == '__main__':
     whisky_main_page = whisky_main_page.loc[whisky_main_page["num_reviews"] != ""]
 
     # Extract unique URLs from the whisky_link column
-    unique_urls = whisky_main_page['whisky_link'].tolist()[:100]
+    unique_urls = whisky_main_page['whisky_link'].tolist()
 
     try:
         # Scrape data from multiple pages concurrently
@@ -112,8 +113,9 @@ if __name__ == '__main__':
 
         # Concatenate the DataFrames into one final DataFrame
         whisky_details = pd.concat(scraped_data, ignore_index=True)
-        # Print the final DataFrame
-        csv_file_path = 'whisky_details_100.csv'
+
+        # Print/export the final DataFrame
+        csv_file_path = 'whisky_details_all.csv'
         whisky_details.to_csv(csv_file_path, index=False)
         #print(whisky_details)
     finally:

@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 # Step 1: Import CSV file
 whisky_details_df = pd.read_csv('whisky_details_100.csv')
@@ -14,16 +13,22 @@ whisky_details_df = pd.merge(whisky_details_df, main_page_df[
     ['whisky_link', 'whisky_name_suffix', 'whisky_rating', 'num_ratings', 'num_reviews']],
                           left_on='whisky_url', right_on='whisky_link', how='left')
 
-# Step 2: Cleaning the features
-whisky_details_df['whisky_age'] = whisky_details_df['whisky_age_inner'].apply(
-    lambda x: 'NAS' if pd.isna(x) else x.split()[0]) #str(int(x.split()[0])))
-whisky_details_df['alcohol_pct'] = whisky_details_df['alcohol_pct_inner'].str.rstrip('%').astype(float)
-whisky_details_df['num_ratings'] = whisky_details_df['num_ratings'].str.replace(r'[\(\),]', '', regex=True).astype(float)
-whisky_details_df['num_reviews'] = pd.to_numeric(whisky_details_df['num_reviews'], errors='coerce').fillna(0).astype(int)
 
-whisky_details_df['full_name'] = whisky_details_df.apply(lambda row:
-    row['distillery_name_inner'] + (" " + row['whisky_age'] if row['whisky_age'] != 'NAS' else "") + \
-    (" " + row['whisky_name_suffix'] if not pd.isna(row['whisky_name_suffix']) and row['whisky_name_suffix'] != '' else ""), axis=1)
+# Step 2: Cleaning the features
+def apply_regex_cleaning(whisky_details_df):
+    whisky_details_df['whisky_age'] = whisky_details_df['whisky_age_inner'].apply(
+        lambda x: 'NAS' if pd.isna(x) else x.split()[0]) #str(int(x.split()[0])))
+    whisky_details_df['alcohol_pct'] = whisky_details_df['alcohol_pct_inner'].str.rstrip('%').astype(float)
+    whisky_details_df['num_ratings'] = whisky_details_df['num_ratings'].str.replace(r'[\(\),]', '', regex=True).astype(float)
+    whisky_details_df['num_reviews'] = pd.to_numeric(whisky_details_df['num_reviews'], errors='coerce').fillna(0).astype(int)
+
+    whisky_details_df['full_name'] = whisky_details_df.apply(lambda row:
+        row['distillery_name_inner'] + (" " + row['whisky_age'] if row['whisky_age'] != 'NAS' else "") + \
+        (" " + row['whisky_name_suffix'] if not pd.isna(row['whisky_name_suffix']) and row['whisky_name_suffix'] != '' else ""), axis=1)
+
+    return whisky_details_df
+
+whisky_details_df = apply_regex_cleaning(whisky_details_df)
 
 # Step 4: Create 'post_treatment_possibilities' dictionary and one-hot encode
 post_treatment_possibilities = set()

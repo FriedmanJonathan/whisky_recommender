@@ -1,4 +1,3 @@
-// script.js
 function recommendWhisky() {
     const whisky1 = document.getElementById("whisky1").value;
     const whisky2 = document.getElementById("whisky2").value;
@@ -86,6 +85,109 @@ function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
 }
 
 
+// Model operation: this function operate the model when the user clicks the 'recommend' button:
+
+// Simple functionality placeholder: simply add up the three names
+function recommendWhisky() {
+    const whisky1 = document.getElementById("whisky1").value;
+    const whisky2 = document.getElementById("whisky2").value;
+    const whisky3 = document.getElementById("whisky3").value;
+
+    // Replace this logic with your whisky recommender model
+    // For this example, we'll just concatenate the whisky names.
+    const recommendedWhisky = whisky1 + " " + whisky2 + " " + whisky3;
+
+    document.getElementById("recommendedWhisky").textContent = `Recommended Whisky: ${recommendedWhisky}`;
+}
+
+
+// Modify the recommendWhisky function to send a POST request to your backend API endpoint
+function recommendWhisky() {
+    const whisky1 = document.getElementById("whisky1").value;
+    const whisky2 = document.getElementById("whisky2").value;
+    const whisky3 = document.getElementById("whisky3").value;
+
+    // Create an object with the whisky names
+    const data = {
+        whisky_names: [whisky1, whisky2, whisky3]
+    };
+
+    fetch('/recommend', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        const recommendedWhisky = result.recommended_whisky;
+        document.getElementById("recommendedWhisky").textContent = `Recommended Whisky: ${recommendedWhisky}`;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+
+// Add this function to toggle the display of rating or reason based on the selected feedback
+function toggleFeedbackOptions() {
+    const feedbackOption = document.querySelector('input[name="feedback1"]:checked').value;
+    const ratingSection = document.getElementById('ratingSection');
+    const reasonSection = document.getElementById('reasonSection');
+
+    if (feedbackOption === "I know this whisky") {
+        ratingSection.style.display = 'block';
+        reasonSection.style.display = 'none';
+    } else if (feedbackOption === "I don't know this whisky") {
+        ratingSection.style.display = 'none';
+        reasonSection.style.display = 'block';
+    }
+}
+
+
+// Function to submit feedback
+function submitFeedback() {
+    const feedbackForm = document.getElementById('feedbackForm');
+    const feedback1 = document.querySelector('input[name="feedback1"]:checked').value;
+    let feedback2;
+
+    if (feedback1 === "I know this whisky") {
+        feedback2 = document.querySelector('input[name="feedback2"]').value;
+    } else if (feedback1 === "I don't know this whisky") {
+        feedback2 = document.querySelector('select[name="feedback2"]').value;
+    }
+
+    // You can now send this feedback data to your backend or save it to a CSV file
+    // Example: Send feedback data to the backend for processing
+    const feedbackData = {
+        whisky1: document.getElementById('whisky1').value,
+        recommendedWhisky: document.getElementById('recommendedWhisky').textContent,
+        feedback1: feedback1,
+        feedback2: feedback2
+    };
+
+    fetch('/submitFeedback', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(feedbackData)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Feedback submitted successfully!');
+            // Clear form or perform any other necessary actions
+            feedbackForm.reset();
+        } else {
+            alert('Failed to submit feedback. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
 
 // Get references to the select elements
@@ -112,6 +214,12 @@ const distillerySelect3 = document.getElementById('distillery3');
 const whiskySelect3Id = 'whisky3'; // ID of the corresponding whisky select element
 distillerySelect3.addEventListener('change', function() {
     updateWhiskyDropdown(distillerySelect3, whiskySelect3Id);
+});
+
+// Add an event listener to call the toggleFeedbackOptions function when a radio button is clicked
+const feedbackRadios = document.querySelectorAll('input[name="feedback1"]');
+feedbackRadios.forEach(radio => {
+    radio.addEventListener('click', toggleFeedbackOptions);
 });
 
 

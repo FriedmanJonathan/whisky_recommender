@@ -53,3 +53,26 @@ button:hover {
     font-weight: bold;
     margin-top: 1rem;
 }
+
+label {
+    margin-bottom: 10px;
+}
+
+/* Add spacing between the rating input and label */
+#rating {
+    margin-bottom: 10px;
+}
+
+/* Add spacing between the dropdown menu and label */
+#feedback2 {
+    margin-bottom: 10px;
+}
+
+/* Add spacing between the button and the elements above it */
+button {
+    margin-top: 10px;
+}
+
+.feedback-option {
+        margin-bottom: 20px;
+    }

@@ -80,6 +80,38 @@
         </form>
         <h2>Recommended Whisky:</h2>
         <p id="recommendedWhisky"></p>
+        <h2>Feedback</h2>
+        <form id="feedbackForm">
+            <div class="feedback-option">
+                <label>
+                    <input type="radio" name="feedback1" value="know" checked>
+                    I know this whisky
+                </label>
+                <label>
+                    <input type="radio" name="feedback1" value="dont-know">
+                    I don't know this whisky
+                </label>
+            </div>
+            <br>
+            <div class="feedback-option">
+                <label for="rating">Rate the recommendation (1-5):</label>
+                <input type="number" id="rating" name="rating" min="1" max="5" required>
+            </div>
+            <br>
+            <div class="feedback-option">
+                <label for="feedback2">Additional feedback:</label>
+                <select id="feedback2" name="feedback2">
+                    <option value="good">After looking into this whisky, this seems like a good choice!</option>
+                    <option value="poor">After looking into this whisky, this seems like a poor choice.</option>
+                    <option value="try-again">Never mind, I'll try again later.</option>
+                </select>
+            </div>
+            <br>
+            <div class="feedback-option">
+                <button type="button" onclick="submitFeedback()">Submit Feedback</button>
+            </div>
+        </form>
+
     </main>
     <script src="script.js"></script>
 </body>

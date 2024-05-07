@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 
+URL_PREFIX = 'https://www.whisky.com'
 
 def scrape_whisky_website(url):
     # Initialize the Selenium WebDriver and open website
@@ -39,7 +40,7 @@ def scrape_whisky_website(url):
             whisky_link = link['href']
             # Extract data and append it to the list
             whisky_data = {
-                'whisky_link': whisky_link,
+                'whisky_link': URL_PREFIX + whisky_link,
                 'whisky_name': title_div.find('span', class_='marke').text.strip(),
                 'whisky_age': title_div.find('span', class_='alterEtikett').text.strip(),
                 'bottling_date': title_div.find('span', class_='abfuelldatum').text.strip(),
@@ -85,7 +86,7 @@ if __name__ == '__main__':
     whisky_data = scrape_whisky_website(main_url)
 
     # Specify the file path where you want to save the CSV file
-    csv_file_path = "whisky_main_page_with_ratings.csv"  # Replace with your desired file path
+    csv_file_path = "../../data/raw/2024_05/whisky_main_page_with_ratings.csv"  # Replace with your desired file path
 
     # Use the to_csv method to export the DataFrame to a CSV file
     whisky_data.to_csv(csv_file_path, index=False)  # Set index to False if you don't want to include the index in the CSV file

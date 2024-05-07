@@ -1,10 +1,10 @@
 import pandas as pd
 
 # Step 1: Import CSV file
-whisky_details_df = pd.read_csv('whisky_details_100.csv')
+whisky_details_df = pd.read_csv('../../data/raw/2023_09/whisky_details_100.csv')
 
 # Merge 'main_page_df' with 'whisky_details_df' on 'whisky_link' and 'whisky_url'
-main_page_df = pd.read_csv('whisky_main_page_with_ratings.csv')
+main_page_df = pd.read_csv('../../data/raw/2024_05/whisky_main_page_with_ratings.csv')
 main_page_df.drop_duplicates(
         subset=['whisky_name', 'whisky_age', 'alcohol_pct', 'whisky_rating', 'num_reviews', 'num_ratings'],
         inplace=True

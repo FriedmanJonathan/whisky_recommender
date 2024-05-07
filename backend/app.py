@@ -30,7 +30,7 @@ def submit_feedback():
 
 
 # Recommender model deployment:
-from whisky_recommender_model import recommend_whisky
+from scripts.recommendation.whisky_recommender_model import recommend_whisky
 
 @app.route('/recommend', methods=['POST'])
 def recommend_whisky_endpoint():

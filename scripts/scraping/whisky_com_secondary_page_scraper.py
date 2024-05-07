@@ -4,7 +4,7 @@ import pandas as pd
 from bs4 import BeautifulSoup, Comment
 
 # Define the delay between requests (in seconds)
-REQUEST_DELAY = 2.5  # Adjust as needed
+REQUEST_DELAY = 10  # Adjust as needed
 
 # Extract tasting notes
 
@@ -44,9 +44,14 @@ async def scrape_page(url):
                 except IndexError:
                     print(f"Region Index Error at {url}")
                     region = ""
-                whisky_type = soup.find('tr', class_='sorte').find('a').text.strip()
-                try: whisky_age_inner = soup.find('tr', class_='fassnummern').find('span', class_='value').text.strip()
-                except AttributeError: whisky_age_inner = "NAS" # if no age found, NAS (No Age Statement)
+                try:
+                    whisky_type = soup.find('tr', class_='sorte').find('a').text.strip()
+                except AttributeError:
+                    whisky_type = 'Unknown'
+                try:
+                    whisky_age_inner = soup.find('tr', class_='fassnummern').find('span', class_='value').text.strip()
+                except AttributeError:
+                    whisky_age_inner = "NAS" # if no age found, NAS (No Age Statement)
                 alcohol_pct_inner = soup.find('tr', class_='alkoholgehalt').find('span', class_='value').text.strip()
                 bottler = soup.find('tr', class_='abfueller').find('a').text.strip()
 
@@ -92,7 +97,7 @@ if __name__ == '__main__':
     asyncio.set_event_loop(loop)
 
     # Import the whisky_main_page DataFrame from the CSV file
-    whisky_main_page = pd.read_csv('whisky_main_page_with_ratings.csv')
+    whisky_main_page = pd.read_csv('../../data/raw/2024_05/whisky_main_page_with_ratings.csv')
 
     # Drop duplicates based on the specified columns
     whisky_main_page.drop_duplicates(
@@ -109,15 +114,16 @@ if __name__ == '__main__':
 
     try:
         # Scrape data from multiple pages concurrently
-        scraped_data = asyncio.run(scrape_multiple_pages(unique_urls))
+        scraped_data = asyncio.run_until_complete(scrape_multiple_pages(unique_urls))
 
         # Concatenate the DataFrames into one final DataFrame
         whisky_details = pd.concat(scraped_data, ignore_index=True)
 
         # Print/export the final DataFrame
-        csv_file_path = 'whisky_details_all.csv'
+        csv_file_path = '../../data/raw/2024_05/whisky_details_all.csv'
         whisky_details.to_csv(csv_file_path, index=False)
         #print(whisky_details)
     finally:
-        # Close the event loop
-        loop.close()
+        pass
+        #Close the event loop
+        #loop.close()

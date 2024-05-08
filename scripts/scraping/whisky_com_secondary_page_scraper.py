@@ -4,7 +4,7 @@ import pandas as pd
 from bs4 import BeautifulSoup, Comment
 
 # Define the delay between requests (in seconds)
-REQUEST_DELAY = 10  # Adjust as needed
+REQUEST_DELAY = 1.5  # Adjust as needed
 
 # Extract tasting notes
 
@@ -60,6 +60,7 @@ async def scrape_page(url):
                     post_treatment_tags = soup.find('tr', class_='merkmale').find_all('img', title=True)
                     post_treatment = [tag['title'] for tag in post_treatment_tags]
                 except AttributeError: post_treatment = ""
+
                 # Create a DataFrame for the scraped data
                 df = pd.DataFrame({
                     'whisky_url': [url],
@@ -114,7 +115,7 @@ if __name__ == '__main__':
 
     try:
         # Scrape data from multiple pages concurrently
-        scraped_data = asyncio.run_until_complete(scrape_multiple_pages(unique_urls))
+        scraped_data = asyncio.run(scrape_multiple_pages(unique_urls))
 
         # Concatenate the DataFrames into one final DataFrame
         whisky_details = pd.concat(scraped_data, ignore_index=True)
@@ -124,6 +125,4 @@ if __name__ == '__main__':
         whisky_details.to_csv(csv_file_path, index=False)
         #print(whisky_details)
     finally:
-        pass
-        #Close the event loop
-        #loop.close()
+        loop.close()

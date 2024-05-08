@@ -1,50 +1,68 @@
 import pandas as pd
 
-# Step 1: Import CSV file
-whisky_details_df = pd.read_csv('../../data/raw/2023_09/whisky_details_100.csv')
+# Paths to input and output CSVs
+DETAILS_CSV_PATH = '../../data/raw/2024_05/whisky_details_all.csv'
+MAIN_PAGE_CSV_PATH = '../../data/raw/2024_05/whisky_main_page_with_ratings.csv'
+OUTPUT_CSV_PATH = '../../data/processed/2024_05/whisky_features_test.csv'
 
-# Merge 'main_page_df' with 'whisky_details_df' on 'whisky_link' and 'whisky_url'
-main_page_df = pd.read_csv('../../data/raw/2024_05/whisky_main_page_with_ratings.csv')
-main_page_df.drop_duplicates(
-        subset=['whisky_name', 'whisky_age', 'alcohol_pct', 'whisky_rating', 'num_reviews', 'num_ratings'],
+
+def load_and_merge_data(details_path, main_page_path):
+    """Load data from the given CSV files and merge the details with the main page data."""
+    whisky_details_df = pd.read_csv(details_path)
+    main_page_df = pd.read_csv(main_page_path)
+
+    # Merge based on 'whisky_link' and 'whisky_url'
+    whisky_details_df = pd.merge(
+        whisky_details_df,
+        main_page_df[['whisky_link', 'whisky_name_suffix', 'whisky_rating', 'num_ratings', 'num_reviews']],
+        left_on='whisky_url',
+        right_on='whisky_link',
+        how='left'
+    )
+
+    # Drop duplicates based on notes - if identical for all tw
+    whisky_details_df.drop_duplicates(
+        subset=['nosing_notes','tasting_notes','finish_notes'],
         inplace=True
     )
-whisky_details_df = pd.merge(whisky_details_df, main_page_df[
-    ['whisky_link', 'whisky_name_suffix', 'whisky_rating', 'num_ratings', 'num_reviews']],
-                          left_on='whisky_url', right_on='whisky_link', how='left')
+
+    return whisky_details_df
 
 
-# Step 2: Cleaning the features
-def apply_regex_cleaning(whisky_details_df):
+def clean_features(whisky_details_df):
+    """Clean feature columns in the whisky details DataFrame."""
     whisky_details_df['whisky_age'] = whisky_details_df['whisky_age_inner'].apply(
-        lambda x: 'NAS' if pd.isna(x) else x.split()[0]) #str(int(x.split()[0])))
+        lambda x: 'NAS' if pd.isna(x) else x.split()[0])
     whisky_details_df['alcohol_pct'] = whisky_details_df['alcohol_pct_inner'].str.rstrip('%').astype(float)
     whisky_details_df['num_ratings'] = whisky_details_df['num_ratings'].str.replace(r'[\(\),]', '', regex=True).astype(float)
     whisky_details_df['num_reviews'] = pd.to_numeric(whisky_details_df['num_reviews'], errors='coerce').fillna(0).astype(int)
 
-    whisky_details_df['full_name'] = whisky_details_df.apply(lambda row:
-        row['distillery_name_inner'] + (" " + row['whisky_age'] if row['whisky_age'] != 'NAS' else "") + \
-        (" " + row['whisky_name_suffix'] if not pd.isna(row['whisky_name_suffix']) and row['whisky_name_suffix'] != '' else ""), axis=1)
-
+    whisky_details_df['full_name'] = whisky_details_df.apply(
+        lambda row: f"{row['distillery_name_inner']} "
+                    f"{row['whisky_age'] if row['whisky_age'] != 'NAS' else ''} "
+                    f"{row['whisky_name_suffix'] if pd.notna(row['whisky_name_suffix']) else ''}".strip(),
+        axis=1
+    )
     return whisky_details_df
 
-whisky_details_df = apply_regex_cleaning(whisky_details_df)
 
-# Step 4: Create 'post_treatment_possibilities' dictionary and one-hot encode
-post_treatment_possibilities = set()
-for index, row in whisky_details_df.iterrows():
-    if not pd.isna(row['post_treatment']):
-        post_treatment_dict = eval(row['post_treatment'])
-        for post_treatment in post_treatment_dict:
-            post_treatment_possibilities.add(post_treatment)
+def one_hot_encode_post_treatment(whisky_details_df):
+    """One-hot encode the post-treatment information."""
+    post_treatment_possibilities = set()
+    for index, row in whisky_details_df.iterrows():
+        if not pd.isna(row['post_treatment']):
+            post_treatment_dict = eval(row['post_treatment'])
+            post_treatment_possibilities.update(post_treatment_dict)
 
-for possibility in post_treatment_possibilities:
-    whisky_details_df[possibility] = whisky_details_df['post_treatment'].apply(
-        lambda x: 1 if not pd.isna(x) and possibility in eval(x) else 0)
+    for possibility in post_treatment_possibilities:
+        whisky_details_df[possibility] = whisky_details_df['post_treatment'].apply(
+            lambda x: 1 if not pd.isna(x) and possibility in eval(x) else 0
+        )
+    return whisky_details_df
 
 
-# Step 5: Create 'average_notes' dictionary and calculate the average
-def average_notes(row):
+def calculate_average_notes(row):
+    """Calculate the average notes for nosing, tasting, and finish."""
     nosing_notes = eval(row['nosing_notes']) if not pd.isna(row['nosing_notes']) else {}
     tasting_notes = eval(row['tasting_notes']) if not pd.isna(row['tasting_notes']) else {}
     finish_notes = eval(row['finish_notes']) if not pd.isna(row['finish_notes']) else {}
@@ -53,27 +71,56 @@ def average_notes(row):
 
     average_dict = {}
     for key in all_keys:
-        total_score = (float(nosing_notes.get(key, 0)) + float(tasting_notes.get(key, 0)) + float(finish_notes.get(key, 0))) / (3*10)
+        total_score = (float(nosing_notes.get(key, 0)) + float(tasting_notes.get(key, 0)) + float(finish_notes.get(key, 0))) / (3 * 10)
         average_dict[key] = round(total_score)
 
     return average_dict
 
 
-whisky_details_df['average_notes'] = whisky_details_df.apply(average_notes, axis=1)
+def one_hot_encode_average_notes(whisky_details_df):
+    """One-hot encode the average notes for nosing, tasting, and finish."""
+    whisky_details_df['average_notes'] = whisky_details_df.apply(calculate_average_notes, axis=1)
 
-# Step 6: Create 'all_notes' dictionary and one-hot encode
-all_notes = set()
-for index, row in whisky_details_df.iterrows():
-    if not pd.isna(row['average_notes']):
-        all_notes.update(row['average_notes'].keys())
+    all_notes = set()
+    for index, row in whisky_details_df.iterrows():
+        if not pd.isna(row['average_notes']):
+            all_notes.update(row['average_notes'].keys())
 
-for note in all_notes:
-    whisky_details_df[note.rstrip(':')] = whisky_details_df['average_notes'].apply(lambda x: x.get(note, 0))
+    for note in all_notes:
+        whisky_details_df[note.rstrip(':')] = whisky_details_df['average_notes'].apply(lambda x: x.get(note, 0))
+    return whisky_details_df
 
-# Step 7: Delete the original columns
-whisky_details_df.drop(
-    ['whisky_age_inner', 'post_treatment', 'nosing_notes', 'tasting_notes', 'finish_notes', 'average_notes', 'alcohol_pct_inner'], axis=1,
-    inplace=True)
 
-# Step 8: Export the final DataFrame to CSV
-whisky_details_df.to_csv('whisky_features_100.csv', index=False)
+def drop_unnecessary_columns(whisky_details_df):
+    """Drop unnecessary columns from the whisky details DataFrame."""
+    columns_to_drop = [
+        'whisky_age_inner', 'post_treatment', 'nosing_notes', 'tasting_notes',
+        'finish_notes', 'average_notes', 'alcohol_pct_inner'
+    ]
+    whisky_details_df.drop(columns=columns_to_drop, axis=1, inplace=True)
+    return whisky_details_df
+
+
+def main():
+    """Main function to orchestrate data loading, cleaning, transformation, and export."""
+    # Step 1: Load and merge data
+    whisky_details_df = load_and_merge_data(DETAILS_CSV_PATH, MAIN_PAGE_CSV_PATH)
+
+    # Step 2: Clean features
+    whisky_details_df = clean_features(whisky_details_df)
+
+    # Step 3: One-hot encode post-treatment
+    whisky_details_df = one_hot_encode_post_treatment(whisky_details_df)
+
+    # Step 4: One-hot encode average notes
+    whisky_details_df = one_hot_encode_average_notes(whisky_details_df)
+
+    # Step 5: Drop unnecessary columns
+    whisky_details_df = drop_unnecessary_columns(whisky_details_df)
+
+    # Step 6: Export the final DataFrame to CSV
+    whisky_details_df.to_csv(OUTPUT_CSV_PATH, index=False)
+
+
+if __name__ == '__main__':
+    main()

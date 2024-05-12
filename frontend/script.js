@@ -45,44 +45,61 @@ function loadDistilleryOptions() {
 
 
 // Function to update the whisky dropdown based on distillery selection
-function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
+async function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
     const selectedDistillery = selectedDistillerySelect.value;
-    const whiskySelect = document.getElementById(whiskySelectId); // Get the whisky select element by ID
+    const whiskySelect = document.getElementById(whiskySelectId);
 
-    // Fetch the CSV file
-    fetch('distillery_data.csv')
-        .then(response => response.text())
-        .then(data => {
-            // Parse the CSV data into an array of objects
-            const rows = data.split('\n');
-            const distilleryWhiskies = {};
-            for (let i = 1; i < rows.length; i++) {
-                const [distillery, whiskyName] = rows[i].split(',');
-                if (!distilleryWhiskies[distillery]) {
-                    distilleryWhiskies[distillery] = [];
-                }
-                distilleryWhiskies[distillery].push(whiskyName);
+    try {
+        // Fetch the CSV data
+        const response = await fetch('distillery_data.csv');
+        if (!response.ok) throw new Error('Failed to load CSV data');
+
+        const data = await response.text();
+
+        // Parse the CSV data into an object mapping distilleries to whiskies
+        const distilleryWhiskies = {};
+        const rows = data.split('\n');
+
+        for (let i = 1; i < rows.length; i++) {
+            const [distillery, whiskyName] = rows[i].split(',').map(str => str.trim());
+            if (!distilleryWhiskies[distillery]) {
+                distilleryWhiskies[distillery] = [];
             }
+            distilleryWhiskies[distillery].push(whiskyName);
+        }
 
-            // Update the whisky dropdown
-            const whiskies = distilleryWhiskies[selectedDistillery] || [];
-            whiskySelect.innerHTML = "";
-            if (whiskies.length === 0) {
+        // Update the whisky dropdown based on the selected distillery
+        whiskySelect.innerHTML = ""; // Clear the current options
+
+        // Add a default "Select a whisky" option
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Select a whisky";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        whiskySelect.appendChild(defaultOption);
+
+        const whiskies = distilleryWhiskies[selectedDistillery] || [];
+        if (whiskies.length === 0) {
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "No whiskies available for this distillery";
+            option.disabled = true;
+            whiskySelect.appendChild(option);
+        } else {
+            whiskies.forEach(whiskyName => {
                 const option = document.createElement("option");
-                option.value = "";
-                option.textContent = "No whiskies available for this distillery";
-                option.disabled = true;
+                option.value = whiskyName;
+                option.textContent = whiskyName;
                 whiskySelect.appendChild(option);
-            } else {
-                whiskies.forEach((whiskyName) => {
-                    const option = document.createElement("option");
-                    option.value = whiskyName;
-                    option.textContent = whiskyName;
-                    whiskySelect.appendChild(option);
-                });
-            }
-        });
+            });
+        }
+    } catch (error) {
+        console.error('Error loading or processing distillery data:', error);
+        alert('Failed to load distillery data. Please try again.');
+    }
 }
+
 
 
 // Model operation: this function operate the model when the user clicks the 'recommend' button:

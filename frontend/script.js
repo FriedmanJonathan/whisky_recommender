@@ -102,32 +102,30 @@ function recommendWhisky() {
 
 
 // Modify the recommendWhisky function to send a POST request to your backend API endpoint
-function recommendWhisky() {
+async function recommendWhisky() {
     const whisky1 = document.getElementById("whisky1").value;
     const whisky2 = document.getElementById("whisky2").value;
     const whisky3 = document.getElementById("whisky3").value;
 
-    // Create an object with the whisky names
-    const data = {
-        whisky_names: [whisky1, whisky2, whisky3]
-    };
+    const data = { whisky_names: [whisky1, whisky2, whisky3] };
 
-    fetch('/recommend', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        const recommendedWhisky = result.recommended_whisky;
-        document.getElementById("recommendedWhisky").textContent = `Recommended Whisky: ${recommendedWhisky}`;
-    })
-    .catch(error => {
+    try {
+        const response = await fetch('/recommend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch recommendation');
+
+        const result = await response.json();
+        document.getElementById("recommendedWhisky").textContent = `Recommended Whisky: ${result.recommended_whisky}`;
+    } catch (error) {
         console.error('Error:', error);
-    });
+        alert('Failed to fetch recommendation. Please try again.');
+    }
 }
+
 
 
 

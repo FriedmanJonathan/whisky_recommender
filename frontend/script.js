@@ -15,33 +15,36 @@ function recommendWhisky() {
 
 
 // Function to load distillery options from the CSV file
-function loadDistilleryOptions() {
-    fetch('distillery_data.csv') // Replace with the path to your CSV file
-        .then(response => response.text())
-        .then(data => {
-            const distilleries = new Set(); // Use a Set to store unique distilleries
+async function loadDistilleryOptions() {
+    try {
+        const response = await fetch('distillery_data.csv');
+        if (!response.ok) throw new Error('Failed to load CSV data');
 
-            // Parse the CSV data and extract distilleries
-            const rows = data.split('\n');
-            for (let i = 1; i < rows.length; i++) {
-                const distillery = rows[i].split(',')[0].trim();
-                distilleries.add(distillery);
-            }
+        const data = await response.text();
+        const distilleries = new Set(); // Use a Set to store unique distilleries
 
-            // Populate distillery dropdowns with unique distillery options
-            distillerySelects.forEach((distillerySelect) => {
-                distilleries.forEach((distillery) => {
-                    const option = document.createElement("option");
-                    option.value = distillery;
-                    option.textContent = distillery;
-                    distillerySelect.appendChild(option);
-                });
-            });
-        })
-        .catch(error => {
-            console.error('Error loading distillery data:', error);
+        // Parse the CSV data and extract distilleries
+        const rows = data.split('\n').slice(1); // Skip the header
+        rows.forEach(row => {
+            const [distillery] = row.split(','); // Only get the first column
+            if (distillery) distilleries.add(distillery.trim());
         });
+
+        // Populate distillery dropdowns
+        const distillerySelects = document.querySelectorAll('.distillery-select');
+        distillerySelects.forEach((select) => {
+            distilleries.forEach((distillery) => {
+                const option = document.createElement("option");
+                option.value = distillery;
+                option.textContent = distillery;
+                select.appendChild(option);
+            });
+        });
+    } catch (error) {
+        console.error('Error loading distillery data:', error);
+    }
 }
+
 
 
 // Function to update the whisky dropdown based on distillery selection

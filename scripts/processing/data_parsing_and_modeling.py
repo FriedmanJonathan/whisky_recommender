@@ -4,6 +4,7 @@ import pandas as pd
 DETAILS_CSV_PATH = '../../data/raw/2024_05/whisky_details_all.csv'
 MAIN_PAGE_CSV_PATH = '../../data/raw/2024_05/whisky_main_page_with_ratings.csv'
 OUTPUT_CSV_PATH = '../../data/processed/2024_05/whisky_features_test.csv'
+DISTILLERY_OUTPUT_CSV_PATH = '../../data/processed/2024_05/distillery_data.csv'
 
 
 def load_and_merge_data(details_path, main_page_path):
@@ -101,6 +102,35 @@ def drop_unnecessary_columns(whisky_details_df):
     return whisky_details_df
 
 
+def create_distillery_data_table(whisky_details_df):
+    """
+    Create a table with distillery names and concatenated whisky names.
+    Only include whisky age in the name if it is not 'NAS', and include the whisky_name_suffix if it exists.
+    """
+    # Ensure clean data by removing leading/trailing whitespace
+    whisky_details_df['whisky_age'] = whisky_details_df['whisky_age'].str.strip()
+    whisky_details_df['whisky_name_suffix'] = whisky_details_df['whisky_name_suffix'].str.strip()
+
+    # Concatenate whisky age and suffix if applicable
+    whisky_details_df['whisky_name'] = whisky_details_df.apply(
+        lambda
+            row: f"{row['whisky_age'] + ' ' if row['whisky_age'] != 'NAS' else ''}{row['whisky_name_suffix'] if pd.notna(row['whisky_name_suffix']) else ''}".strip(),
+        axis=1
+    )
+
+    # Create a new DataFrame for the CSV output
+    distillery_data = whisky_details_df[['distillery_name_inner', 'whisky_name']].rename(
+        columns={'distillery_name_inner': 'distillery'})
+
+    # Drop duplicates to ensure each distillery-whisky pair is unique
+    distillery_data = distillery_data.drop_duplicates()
+
+    # Write to CSV
+    distillery_data.to_csv(DISTILLERY_OUTPUT_CSV_PATH, index=False)
+
+    print("Distillery data table created successfully.")
+
+
 def main():
     """Main function to orchestrate data loading, cleaning, transformation, and export."""
     # Step 1: Load and merge data
@@ -120,6 +150,9 @@ def main():
 
     # Step 6: Export the final DataFrame to CSV
     whisky_details_df.to_csv(OUTPUT_CSV_PATH, index=False)
+
+    # Step 7: Create distillery data table
+    create_distillery_data_table(whisky_details_df)
 
 
 if __name__ == '__main__':

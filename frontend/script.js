@@ -4,7 +4,7 @@
 // Function to load distillery options from the CSV file
 async function loadDistilleryOptions() {
     try {
-        const response = await fetch('distillery_data.csv');
+        const response = await fetch('../data/processed/2024_05/distillery_data.csv');
         if (!response.ok) throw new Error('Failed to load CSV data');
 
         const data = await response.text();

@@ -12,21 +12,25 @@ csv_filename = 'feedback_data.csv'
 @app.route('/submitFeedback', methods=['POST'])
 def submit_feedback():
     data = request.get_json()
+    required_fields = ['whisky1', 'whisky2', 'whisky3', 'recommendedWhisky', 'feedback1', 'feedback2']
 
-    # Extract feedback data
-    whisky1 = data['whisky1']
-    whisky2 = data['whisky2']
-    whisky3 = data['whisky3']
-    recommended_whisky = data['recommendedWhisky']
-    feedback1 = data['feedback1']
-    feedback2 = data['feedback2']
+    # Check if all required fields are provided
+    if not all(field in data for field in required_fields):
+        return jsonify({'error': 'Missing data'}), 400
 
-    # Append feedback data to the CSV file
-    with open(csv_filename, 'a', newline='') as csv_file:
-        csv_writer = csv.writer(csv_file)
-        csv_writer.writerow([whisky1, whisky2, whisky3, recommended_whisky, feedback1, feedback2])
+    try:
+        # Extract feedback data
+        whisky1, whisky2, whisky3 = data['whisky1'], data['whisky2'], data['whisky3']
+        recommended_whisky, feedback1, feedback2 = data['recommendedWhisky'], data['feedback1'], data['feedback2']
 
-    return jsonify({'message': 'Feedback submitted successfully'}), 200
+        # Append feedback data to the CSV file
+        with open(csv_filename, 'a', newline='') as csv_file:
+            csv_writer = csv.writer(csv_file)
+            csv_writer.writerow([whisky1, whisky2, whisky3, recommended_whisky, feedback1, feedback2])
+
+        return jsonify({'message': 'Feedback submitted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # Recommender model deployment:

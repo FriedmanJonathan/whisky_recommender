@@ -1,16 +1,3 @@
-function recommendWhisky() {
-    const whisky1 = document.getElementById("whisky1").value;
-    const whisky2 = document.getElementById("whisky2").value;
-    const whisky3 = document.getElementById("whisky3").value;
-
-    // Replace this logic with your whisky recommender model
-    // For this example, we'll just concatenate the whisky names.
-    const recommendedWhisky = whisky1 + " " + whisky2 + " " + whisky3;
-
-    document.getElementById("recommendedWhisky").textContent = `Recommended Whisky: ${recommendedWhisky}`;
-}
-
-
 // Add this JavaScript code to dynamically load unique distillery options from the CSV file
 
 
@@ -108,43 +95,52 @@ async function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
 // Model operation: this function operate the model when the user clicks the 'recommend' button:
 
 // Simple functionality placeholder: simply add up the three names
-function recommendWhisky() {
-    const whisky1 = document.getElementById("whisky1").value;
-    const whisky2 = document.getElementById("whisky2").value;
-    const whisky3 = document.getElementById("whisky3").value;
-
-    // Replace this logic with your whisky recommender model
-    // For this example, we'll just concatenate the whisky names.
-    const recommendedWhisky = whisky1 + " " + whisky2 + " " + whisky3;
-
-    document.getElementById("recommendedWhisky").textContent = `Recommended Whisky: ${recommendedWhisky}`;
-}
-
-
 // Modify the recommendWhisky function to send a POST request to your backend API endpoint
 async function recommendWhisky() {
+    // Collect whisky and distillery values
+    const distillery1 = document.getElementById("distillery1").value;
     const whisky1 = document.getElementById("whisky1").value;
+    const distillery2 = document.getElementById("distillery2").value;
     const whisky2 = document.getElementById("whisky2").value;
+    const distillery3 = document.getElementById("distillery3").value;
     const whisky3 = document.getElementById("whisky3").value;
 
-    const data = { whisky_names: [whisky1, whisky2, whisky3] };
+    // Concatenate distillery and whisky values
+    const whiskyWithDistillery1 = `${distillery1} - ${whisky1}`;
+    const whiskyWithDistillery2 = `${distillery2} - ${whisky2}`;
+    const whiskyWithDistillery3 = `${distillery3} - ${whisky3}`;
+
+    // Log these values to verify correct data collection
+    console.log("Whisky with Distillery 1:", whiskyWithDistillery1);
+    console.log("Whisky with Distillery 2:", whiskyWithDistillery2);
+    console.log("Whisky with Distillery 3:", whiskyWithDistillery3);
+
+    // Prepare the data to send to the backend
+    const data = {
+        whisky_names: [whiskyWithDistillery1, whiskyWithDistillery2, whiskyWithDistillery3]
+    };
 
     try {
+        // Send the data to the backend for recommendations
         const response = await fetch('/recommend', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
 
-        if (!response.ok) throw new Error('Failed to fetch recommendation');
+        if (!response.ok) throw new Error(`Failed to fetch recommendation, status: ${response.status}`);
 
+        // Process the server's response
         const result = await response.json();
+        console.log("Recommendation Result:", result);
         document.getElementById("recommendedWhisky").textContent = `Recommended Whisky: ${result.recommended_whisky}`;
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to fetch recommendation. Please try again.');
     }
 }
+
+
 
 
 

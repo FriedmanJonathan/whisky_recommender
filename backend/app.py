@@ -36,13 +36,20 @@ def submit_feedback():
 # Recommender model deployment:
 from scripts.recommendation.whisky_recommender_model import recommend_whisky
 
+
 @app.route('/recommend', methods=['POST'])
 def recommend_whisky_endpoint():
     data = request.get_json()
-    whisky_names = data['whisky_names']  # Assuming the JSON contains 'whisky_names' as a list
-    recommended_whisky = recommend_whisky(whisky_names)
 
-    return jsonify({'recommended_whisky': recommended_whisky})
+    if 'whisky_names' not in data or not isinstance(data['whisky_names'], list):
+        return jsonify({'error': 'Invalid input, list of whisky names expected'}), 400
+
+    try:
+        whisky_names = data['whisky_names']
+        recommended_whisky = recommend_whisky(whisky_names)  # Make sure this function exists and is correctly imported
+        return jsonify({'recommended_whisky': recommended_whisky})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

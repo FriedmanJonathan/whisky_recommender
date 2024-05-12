@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
 def recommend_whisky(whisky_data_file, user_whiskies):
+    """Recommend a whisky and identify common and additional tasting notes."""
     # Load the whisky DataFrame
     whisky_df = pd.read_csv(whisky_data_file)
 
@@ -26,7 +27,7 @@ def recommend_whisky(whisky_data_file, user_whiskies):
     # Sort whiskies by similarity in descending order
     similarity_df = similarity_df.sort_values(by='Cosine_Similarity', ascending=False)
 
-    # Recommended the top whisky (excluding the user's selections)
+    # Recommend the top whisky (excluding the user's selections)
     recommended_whisky = similarity_df[~similarity_df['full_name'].isin(user_whiskies)].iloc[0]['full_name']
 
     # Extract tasting notes for the recommended whisky
@@ -49,17 +50,17 @@ def recommend_whisky(whisky_data_file, user_whiskies):
     additional_notes.sort(key=lambda x: recommended_whisky_notes[user_features.columns.get_loc(x)], reverse=True)
     top_additional_notes = additional_notes[:3]
 
-    return recommended_whisky
-    #return {
-    #    "Recommended Whisky": recommended_whisky,
-    #    "Top Three Common High Tasting Notes": common_high_notes[:3],
-    #    "Top Three Additional Tasting Notes in Recommended Whisky": top_additional_notes
-    #}
+    # Return recommendation details as a dictionary
+    return {
+        "Recommended Whisky": recommended_whisky,
+        "Top Three Common High Tasting Notes": common_high_notes[:3],
+        "Top Three Additional Tasting Notes in Recommended Whisky": top_additional_notes
+    }
 
 # Example usage:
 if __name__ == "__main__":
     user_whiskies = ["Lagavulin 16", "Ardbeg 10 TEN", "Talisker 10"]
     result = recommend_whisky('../../data/processed/2023_09/whisky_features_100.csv', user_whiskies)
-    print(f"Recommendation Results: {result}")
-    #for key, value in result.items():
-    #    print(f"{key}: {value}")
+    print("Recommendation Results:")
+    for key, value in result.items():
+        print(f"{key}: {value}")

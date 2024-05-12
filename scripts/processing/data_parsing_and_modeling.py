@@ -4,7 +4,7 @@ import pandas as pd
 DETAILS_CSV_PATH = '../../data/raw/2024_05/whisky_details_all.csv'
 MAIN_PAGE_CSV_PATH = '../../data/raw/2024_05/whisky_main_page_with_ratings.csv'
 OUTPUT_CSV_PATH = '../../data/processed/2024_05/whisky_features_test.csv'
-DISTILLERY_OUTPUT_CSV_PATH = '../../data/processed/2024_05/distillery_data.csv'
+DISTILLERY_OUTPUT_CSV_PATH = '../../frontend/distillery_data.csv'
 
 
 def load_and_merge_data(details_path, main_page_path):

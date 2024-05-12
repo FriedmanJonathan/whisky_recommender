@@ -2,13 +2,11 @@
 
 import csv
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
 
 # Define the CSV file where feedback will be saved
-csv_filename = 'feedback_data.csv'
+csv_filename = 'distillery_data.csv'
 
 # Feedback submission
 @app.route('/submitFeedback', methods=['POST'])

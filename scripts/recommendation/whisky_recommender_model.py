@@ -59,7 +59,7 @@ def recommend_whisky(whisky_data_file, user_whiskies):
 
 # Example usage:
 if __name__ == "__main__":
-    user_whiskies = ["Lagavulin 16", "Ardbeg 10 TEN", "Talisker 10"]
+    user_whiskies = ["Lagavulin 16", "Ardbeg 10 TEN", "Laphroaig 10"]
     result = recommend_whisky('../../data/processed/2023_09/whisky_features_100.csv', user_whiskies)
     print("Recommendation Results:")
     for key, value in result.items():

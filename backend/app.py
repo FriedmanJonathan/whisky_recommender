@@ -1,12 +1,28 @@
 # Add this code to your Flask app (app.py)
 
 import csv
-from flask import Flask, request, jsonify
+import pandas as pd
+import sys
+import os
 
-app = Flask(__name__)
+# Add the parent directory to sys.path to access the scripts package
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',)))
 
-# Define the CSV file where feedback will be saved
+from flask import Flask, request, jsonify, send_from_directory
+from scripts.recommendation.whisky_recommender_model import recommend_whisky
+
+app = Flask(__name__, static_url_path='', static_folder='../frontend')
+
+# Define the CSV file where feedback will be saved and load feature store data
 csv_filename = 'distillery_data.csv'
+FEATURE_STORE_PATH = '../data/processed/2023_09/whisky_features_100.csv'
+
+
+# Main page
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
+
 
 # Feedback submission
 @app.route('/submitFeedback', methods=['POST'])
@@ -33,10 +49,6 @@ def submit_feedback():
         return jsonify({'error': str(e)}), 500
 
 
-# Recommender model deployment:
-from scripts.recommendation.whisky_recommender_model import recommend_whisky
-
-
 @app.route('/recommend', methods=['POST'])
 def recommend_whisky_endpoint():
     data = request.get_json()
@@ -46,11 +58,15 @@ def recommend_whisky_endpoint():
 
     try:
         whisky_names = data['whisky_names']
-        recommended_whisky = recommend_whisky(whisky_names)  # Make sure this function exists and is correctly imported
-        return jsonify({'recommended_whisky': recommended_whisky})
+
+        recommended_whisky_info = recommend_whisky(FEATURE_STORE_PATH, whisky_names)
+
+        recommended_whisky = recommended_whisky_info["Recommended Whisky"]
+
+        return jsonify({'recommended_whisky': recommended_whisky})  # TODO: First extract the name only, then expand to get all data
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=8000)

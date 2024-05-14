@@ -106,9 +106,9 @@ async function recommendWhisky() {
     const whisky3 = document.getElementById("whisky3").value;
 
     // Concatenate distillery and whisky values
-    const whiskyWithDistillery1 = `${distillery1} - ${whisky1}`;
-    const whiskyWithDistillery2 = `${distillery2} - ${whisky2}`;
-    const whiskyWithDistillery3 = `${distillery3} - ${whisky3}`;
+    const whiskyWithDistillery1 = `${distillery1} ${whisky1}`;
+    const whiskyWithDistillery2 = `${distillery2} ${whisky2}`;
+    const whiskyWithDistillery3 = `${distillery3} ${whisky3}`;
 
     // Log these values to verify correct data collection
     console.log("Whisky with Distillery 1:", whiskyWithDistillery1);
@@ -119,6 +119,9 @@ async function recommendWhisky() {
     const data = {
         whisky_names: [whiskyWithDistillery1, whiskyWithDistillery2, whiskyWithDistillery3]
     };
+
+    console.log("whisky names", data);
+    console.log("Stringified", JSON.stringify(data));
 
     try {
         // Send the data to the backend for recommendations

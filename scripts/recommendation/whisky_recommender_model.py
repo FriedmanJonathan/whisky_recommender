@@ -1,9 +1,32 @@
+"""
+Whisky Recommender Module
+
+This module provides functionality to recommend whiskies based on user-selected whiskies
+and their tasting notes. It uses cosine similarity to find the most similar whisky in the
+dataset to the user's profile and identifies common and additional tasting notes.
+
+Functions:
+    recommend_whisky(whisky_data_file, user_whiskies): Recommends a whisky and identifies common
+    and additional tasting notes.
+
+Example usage shown in bottom of script.
+"""
+
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
-
 def recommend_whisky(whisky_data_file, user_whiskies):
-    """Recommend a whisky and identify common and additional tasting notes."""
+    """
+    Recommend a whisky based on user-selected whiskies and identify common and additional tasting notes.
+
+    Parameters:
+    whisky_data_file (str): Path to the CSV file containing whisky data with tasting notes.
+    user_whiskies (list of str): List of whiskies selected by the user.
+
+    Returns:
+    dict: A dictionary containing the recommended whisky, top three common high tasting notes,
+          and top three additional tasting notes in the recommended whisky.
+    """
     # Load the whisky DataFrame
     whisky_df = pd.read_csv(whisky_data_file)
 

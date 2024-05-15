@@ -17,7 +17,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 def recommend_whisky(whisky_data_file, user_whiskies):
     """
-    Recommend a whisky based on user-selected whiskies and identify common and additional tasting notes.
+    Recommend a whisky based on user-selected whiskies and identify common and additional
+    tasting notes.
 
     Parameters:
     whisky_data_file (str): Path to the CSV file containing whisky data with tasting notes.

@@ -161,7 +161,7 @@ def one_hot_encode_average_notes(whisky_details_df):
     )
 
     all_notes = set()
-    for index, row in whisky_details_df.iterrows():
+    for _, row in whisky_details_df.iterrows():
         if not pd.isna(row["average_notes"]):
             all_notes.update(row["average_notes"].keys())
 

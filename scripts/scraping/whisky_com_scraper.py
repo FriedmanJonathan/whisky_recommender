@@ -7,10 +7,11 @@ retrieved HTML content. Extracted data is saved into a CSV file.
 
 Functions:
     initialize_webdriver(service, options): Initializes the Chrome WebDriver.
-    scroll_web_page(driver, num_scrolls, page_height_to_scroll): Scrolls the web page to load content dynamically.
+    scroll_web_page(driver, num_scrolls, page_height_to_scroll):
+    Scrolls web page to load content dynamically.
     parse_web_page(driver): Parses the current page source using BeautifulSoup.
     extract_whisky_data(parsed_html): Extracts whisky data from the parsed HTML content.
-    extract_individual_whisky_data(title_div, rating_div): Extracts data for an individual whisky entry.
+    extract_individual_whisky_data(title_div, rating_div): Extracts data for one whisky entry.
     save_data_to_csv(data, file_path): Saves the extracted data into a CSV file.
     scrape_whisky_website(url): Main function to scrape whisky data from the specified URL.
 
@@ -65,7 +66,7 @@ def scroll_web_page(driver, num_scrolls, page_height_to_scroll):
     Returns:
     None
     """
-    for i in range(num_scrolls):
+    for _ in range(num_scrolls):
         driver.find_element(By.TAG_NAME, "body").send_keys(Keys.END)
         driver.execute_script(f"window.scrollBy(0, -{page_height_to_scroll});")
         time.sleep(1.5)  # Allow time for content to load
@@ -100,8 +101,8 @@ def extract_whisky_data(parsed_html):
     title_divs = parsed_html.find_all("div", class_="title")
     rating_divs = parsed_html.find_all("div", class_="rating-wrap")
     for title_div, rating_div in zip(title_divs, rating_divs):
-        whisky_data = extract_individual_whisky_data(title_div, rating_div)
-        data.append(whisky_data)
+        individual_whisky_data = extract_individual_whisky_data(title_div, rating_div)
+        data.append(individual_whisky_data)
     return data
 
 
@@ -117,7 +118,7 @@ def extract_individual_whisky_data(title_div, rating_div):
     dict: A dictionary containing the whisky data.
     """
     link = title_div.find("a", href=True)
-    whisky_data = {
+    whisky_data_dict = {
         "whisky_link": URL_PREFIX + link["href"] if link else None,
         "whisky_name": (
             title_div.find("span", class_="marke").text.strip()
@@ -155,15 +156,15 @@ def extract_individual_whisky_data(title_div, rating_div):
         rating_text = rating_links[0].text.strip()
         rating_parts = rating_text.split()
         if len(rating_parts) == 2:
-            whisky_data["whisky_rating"] = rating_parts[0]
-            whisky_data["num_ratings"] = rating_parts[1]
+            whisky_data_dict["whisky_rating"] = rating_parts[0]
+            whisky_data_dict["num_ratings"] = rating_parts[1]
 
     # Extract the number of reviews
     if len(rating_links) > 1:
         num_reviews_text = rating_links[1].text.strip()
-        whisky_data["num_reviews"] = num_reviews_text
+        whisky_data_dict["num_reviews"] = num_reviews_text
 
-    return whisky_data
+    return whisky_data_dict
 
 
 def save_data_to_csv(data, file_path):
@@ -201,7 +202,7 @@ def scrape_whisky_website(url):
 
 
 if __name__ == "__main__":
-    main_url = "https://www.whisky.com/whisky-database/bottle-search.html"
-    whisky_data = scrape_whisky_website(main_url)
-    csv_file_path = "../../data/raw/2024_05/whisky_main_page_with_ratings.csv"
-    save_data_to_csv(whisky_data, csv_file_path)
+    MAIN_URL = "https://www.whisky.com/whisky-database/bottle-search.html"
+    whisky_data = scrape_whisky_website(MAIN_URL)
+    CSV_FILE_PATH = "../../data/raw/2024_05/whisky_main_page_with_ratings.csv"
+    save_data_to_csv(whisky_data, CSV_FILE_PATH)

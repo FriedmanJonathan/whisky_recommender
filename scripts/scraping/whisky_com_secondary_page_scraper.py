@@ -1,15 +1,36 @@
+"""
+Whisky Scraping Module - secondary pages
+
+This module provides functionality to asynchronously scrape whisky data from specified URLs,
+each one leading to a webpage containing data about a specific whisky including reviews and
+tasting notes. (The URL list is compiled using the whisky_com_scraper script.)
+
+Functions:
+    extract_notes(section_tag): Extracts tasting notes from a given HTML section.
+    scrape_page(url): Scrapes data from a single whisky page.
+    scrape_multiple_pages(urls): Scrapes data from multiple whisky pages concurrently.
+
+Example usage is provided at the bottom of the script.
+"""
+
 import asyncio
 import aiohttp
 import pandas as pd
-from bs4 import BeautifulSoup, Comment
+from bs4 import BeautifulSoup
 
 # Define the delay between requests (in seconds)
 REQUEST_DELAY = 1.5  # Adjust as needed
 
-# Extract tasting notes
-
-
 def extract_notes(section_tag):
+    """
+    Extracts tasting notes from a given HTML section.
+
+    Parameters:
+    section_tag (Tag): The HTML section containing the tasting notes.
+
+    Returns:
+    list: A list containing a dictionary of tasting notes and their ratings.
+    """
     notes_dict = {}
     try:
         notes_sections = section_tag.find_all("div", class_="tasteicon-statistic")
@@ -27,8 +48,16 @@ def extract_notes(section_tag):
         pass  # Same
     return [notes_dict]
 
-
 async def scrape_page(url):
+    """
+    Scrapes data from a single whisky page.
+
+    Parameters:
+    url (str): The URL of the whisky page to scrape.
+
+    Returns:
+    DataFrame: A DataFrame containing the scraped whisky data.
+    """
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             if response.status == 200:
@@ -109,15 +138,22 @@ async def scrape_page(url):
 
                 return df
 
-
 async def scrape_multiple_pages(urls):
+    """
+    Scrapes data from multiple whisky pages concurrently.
+
+    Parameters:
+    urls (list of str): List of URLs of the whisky pages to scrape.
+
+    Returns:
+    list of DataFrame: A list of DataFrames containing the scraped whisky data.
+    """
     tasks = []
     for url in urls:
         tasks.append(scrape_page(url))
         await asyncio.sleep(REQUEST_DELAY)  # Add a delay between requests
 
     return await asyncio.gather(*tasks)
-
 
 if __name__ == "__main__":
     # Create an event loop and run the asynchronous tasks
@@ -157,8 +193,8 @@ if __name__ == "__main__":
         whisky_details = pd.concat(scraped_data, ignore_index=True)
 
         # Print/export the final DataFrame
-        csv_file_path = "../../data/raw/2024_05/whisky_details_all.csv"
-        whisky_details.to_csv(csv_file_path, index=False)
+        CSV_FILE_PATH = "../../data/raw/2024_05/whisky_details_all.csv"
+        whisky_details.to_csv(CSV_FILE_PATH, index=False)
         # print(whisky_details)
     finally:
         loop.close()

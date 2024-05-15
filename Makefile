@@ -3,19 +3,19 @@ PYTHON = $(VENV_NAME)\Scripts\python
 
 .PHONY: install
 install:
-	$(PYTHON) -m pip install --upgrade pip && pip install -r requirements.txt
+	$(PYTHON) -m pip install --upgrade pip && $(PYTHON) -m pip install -r requirements.txt
 
 .PHONY: test
 test:
-	$(PYTHON) -m pytest -vv tests/test_data_parsing.py
+	$(PYTHON) -m pytest -vv tests/**/*.py
 
 .PHONY: format
 format:
-	$(PYTHON) -m black tests/test_data_parsing.py
+	$(PYTHON) -m black scripts/**/*.py
 
 .PHONY: lint
 lint:
-	$(PYTHON) -m pylint tests/test_data_parsing.py
+	$(PYTHON) -m pylint scripts/**/*.py
 
 .PHONY: all
 all: install lint test

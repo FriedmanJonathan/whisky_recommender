@@ -42,6 +42,8 @@ button {
     border: none;
     padding: 0.5rem 1rem;
     cursor: pointer;
+    display: block;  /* Ensure button is block level */
+    margin-top: 10px; /* Add spacing between button and elements above it */
 }
 
 button:hover {
@@ -69,10 +71,13 @@ label {
 }
 
 /* Add spacing between the button and the elements above it */
-button {
-    margin-top: 10px;
+.feedback-option {
+    margin-bottom: 20px;
 }
 
-.feedback-option {
-        margin-bottom: 20px;
-    }
+/* Ensure button-container div is block level with spacing */
+.button-container {
+    width: 100%;  /* Ensure it takes up the full width */
+    margin-top: 10px;
+    display: block;
+}

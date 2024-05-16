@@ -75,7 +75,9 @@
                     </td>
                 </tr>
             </table>
-            <button type="button" onclick="recommendWhisky()">Recommend</button>
+            <div class="button-container">
+                <button type="button" onclick="recommendWhisky()">Recommend</button>
+            </div>
         </form>
         <h2>Recommended Whisky:</h2>
         <p id="recommendedWhisky"></p>
@@ -106,11 +108,10 @@
                 </select>
             </div>
             <br>
-            <div class="feedback-option">
+            <div class="button-container">
                 <button type="button" onclick="submitFeedback()">Submit Feedback</button>
             </div>
         </form>
-
     </main>
     <script src="script.js"></script>
 </body>

@@ -210,8 +210,8 @@ def create_distillery_data_table(whisky_details_df):
 
     # Concatenate whisky age and suffix if applicable
     whisky_details_df["whisky_name"] = whisky_details_df.apply(
-        lambda row: f"{row['whisky_age'] + ' ' if row['whisky_age'] != 'NAS' else ''}{row['whisky_name_suffix'] if pd.notna(row['whisky_name_suffix']) else ''}".strip(),
-
+        lambda row: f"{row['whisky_age'] + ' ' if row['whisky_age'] != 'NAS' else ''}"
+                    f"{row['whisky_name_suffix'] if pd.notna(row['whisky_name_suffix']) else ''}".strip(),
         axis=1,
     )
 

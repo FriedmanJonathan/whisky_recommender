@@ -1,6 +1,5 @@
 // Add this JavaScript code to dynamically load unique distillery options from the CSV file
 
-
 // Function to load distillery options from the CSV file
 async function loadDistilleryOptions() {
     try {
@@ -31,8 +30,6 @@ async function loadDistilleryOptions() {
         console.error('Error loading distillery data:', error);
     }
 }
-
-
 
 // Function to update the whisky dropdown based on distillery selection
 async function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
@@ -90,10 +87,7 @@ async function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
     }
 }
 
-
-
 // Model operation: this function operate the model when the user clicks the 'recommend' button:
-
 // Simple functionality placeholder: simply add up the three names
 // Modify the recommendWhisky function to send a POST request to your backend API endpoint
 async function recommendWhisky() {
@@ -143,38 +137,27 @@ async function recommendWhisky() {
     }
 }
 
-
-
-
-
-
 // Add this function to toggle the display of rating or reason based on the selected feedback
 function toggleFeedbackOptions() {
     const feedbackOption = document.querySelector('input[name="feedback1"]:checked').value;
     const ratingSection = document.getElementById('ratingSection');
-    const reasonSection = document.getElementById('reasonSection');
 
-    if (feedbackOption === "I know this whisky") {
+    if (feedbackOption === "know") {
         ratingSection.style.display = 'block';
-        reasonSection.style.display = 'none';
-    } else if (feedbackOption === "I don't know this whisky") {
+    } else {
         ratingSection.style.display = 'none';
-        reasonSection.style.display = 'block';
     }
 }
-
 
 // Function to submit feedback
 function submitFeedback() {
     const feedbackForm = document.getElementById('feedbackForm');
     const feedback1 = document.querySelector('input[name="feedback1"]:checked').value;
-    let feedback2;
-
-    if (feedback1 === "I know this whisky") {
-        feedback2 = document.querySelector('input[name="feedback2"]').value;
-    } else if (feedback1 === "I don't know this whisky") {
-        feedback2 = document.querySelector('select[name="feedback2"]').value;
+    let rating = null;
+    if (feedback1 === "know") {
+        rating = document.getElementById('rating').value || null;
     }
+    const feedback2 = document.getElementById('feedback2').value || "";
 
     // You can now send this feedback data to your backend or save it to a CSV file
     // Example: Send feedback data to the backend for processing
@@ -182,6 +165,7 @@ function submitFeedback() {
         whisky1: document.getElementById('whisky1').value,
         recommendedWhisky: document.getElementById('recommendedWhisky').textContent,
         feedback1: feedback1,
+        rating: rating,
         feedback2: feedback2
     };
 
@@ -205,7 +189,6 @@ function submitFeedback() {
         console.error('Error:', error);
     });
 }
-
 
 // Get references to the select elements
 const distillerySelects = document.querySelectorAll('.distillery-select');
@@ -238,7 +221,6 @@ const feedbackRadios = document.querySelectorAll('input[name="feedback1"]');
 feedbackRadios.forEach(radio => {
     radio.addEventListener('click', toggleFeedbackOptions);
 });
-
 
 // Call the updateWhiskyDropdown function initially to populate the whisky dropdown with the default distillery
 updateWhiskyDropdown();

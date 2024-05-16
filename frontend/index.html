@@ -94,18 +94,14 @@
                 </label>
             </div>
             <br>
-            <div class="feedback-option">
+            <div class="feedback-option" id="ratingSection">
                 <label for="rating">Rate the recommendation on a scale of 1 (poor) to 5 (excellent):</label>
-                <input type="number" id="rating" name="rating" min="1" max="5" required>
+                <input type="number" id="rating" name="rating" min="1" max="5">
             </div>
             <br>
             <div class="feedback-option">
-                <label for="feedback2">Additional feedback:</label>
-                <select id="feedback2" name="feedback2">
-                    <option value="good">After looking into this whisky, this seems like a good choice!</option>
-                    <option value="poor">After looking into this whisky, this seems like a poor choice.</option>
-                    <option value="try-again">Never mind, I'll try again later.</option>
-                </select>
+                <label for="feedback2">Additional feedback (optional):</label>
+                <input type="text" id="feedback2" name="feedback2">
             </div>
             <br>
             <div class="button-container">

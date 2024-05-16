@@ -18,8 +18,8 @@ async function loadDistilleryOptions() {
 
         // Populate distillery dropdowns
         const distillerySelects = document.querySelectorAll('.distillery-select');
-        distillerySelects.forEach((select) => {
-            distilleries.forEach((distillery) => {
+        distilleries.forEach((distillery) => {
+            distillerySelects.forEach((select) => {
                 const option = document.createElement("option");
                 option.value = distillery;
                 option.textContent = distillery;
@@ -130,7 +130,7 @@ async function recommendWhisky() {
         // Process the server's response
         const result = await response.json();
         console.log("Recommendation Result:", result);
-        document.getElementById("recommendedWhisky").textContent = `Recommended Whisky: ${result.recommended_whisky}`;
+        document.getElementById("recommendedWhisky").textContent = result.recommended_whisky;
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to fetch recommendation. Please try again.');
@@ -150,44 +150,51 @@ function toggleFeedbackOptions() {
 }
 
 // Function to submit feedback
-function submitFeedback() {
+async function submitFeedback() {
     const feedbackForm = document.getElementById('feedbackForm');
     const feedback1 = document.querySelector('input[name="feedback1"]:checked').value;
-    let rating = null;
-    if (feedback1 === "know") {
-        rating = document.getElementById('rating').value || null;
-    }
+    const rating = feedback1 === "know" ? document.getElementById('rating').value || null : null;
     const feedback2 = document.getElementById('feedback2').value || "";
+    const whisky1 = document.getElementById("distillery1").value + ' ' + document.getElementById("whisky1").value;
+    const whisky2 = document.getElementById("distillery2").value + ' ' + document.getElementById("whisky2").value;
+    const whisky3 = document.getElementById("distillery3").value + ' ' + document.getElementById("whisky3").value;
+    const recommendedWhisky = document.getElementById('recommendedWhisky').textContent;
+    const timestamp = new Date().toISOString();
 
     // You can now send this feedback data to your backend or save it to a CSV file
     // Example: Send feedback data to the backend for processing
     const feedbackData = {
-        whisky1: document.getElementById('whisky1').value,
-        recommendedWhisky: document.getElementById('recommendedWhisky').textContent,
+        whisky1: whisky1,
+        whisky2: whisky2,
+        whisky3: whisky3,
+        recommendedWhisky: recommendedWhisky,
         feedback1: feedback1,
         rating: rating,
-        feedback2: feedback2
+        feedback2: feedback2,
+        timestamp: timestamp
     };
 
-    fetch('/submitFeedback', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(feedbackData)
-    })
-    .then(response => {
+    try {
+        const response = await fetch('/submitFeedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(feedbackData)
+        });
+
         if (response.ok) {
             alert('Feedback submitted successfully!');
             // Clear form or perform any other necessary actions
             feedbackForm.reset();
+            toggleFeedbackOptions(); // Ensure feedback form resets properly
         } else {
             alert('Failed to submit feedback. Please try again.');
         }
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Error:', error);
-    });
+        alert('An error occurred while submitting feedback. Please try again.');
+    }
 }
 
 // Get references to the select elements

@@ -14,9 +14,7 @@
         <p>Do you know your taste in whisky and are looking to expand your horizons?</p>
         <p>Want to gift a bottle to a friend but don't know what he would like?</p>
         <p>Simply input three whiskies and this app will recommend one just like them!</p>
-        <p><strong>Please note:</strong> the current version compares whiskies using tasting notes
-        alone, with no consideration of age, alcohol percentage, finish, etc. Those will
-        be added in a later version. :)</p>
+        <p><strong>Please note:</strong> the current version compares whiskies using tasting notes alone, with no consideration of age, alcohol percentage, finish, etc. Those will be added in a later version. :)</p>
         <h2>Enter Three Whisky Names</h2>
         <form id="whiskyForm">
             <table>
@@ -85,11 +83,11 @@
         <form id="feedbackForm">
             <div class="feedback-option">
                 <label>
-                    <input type="radio" name="feedback1" value="know" checked>
+                    <input type="radio" name="feedback1" value="know" checked onclick="toggleFeedbackOptions()">
                     I know this whisky
                 </label>
                 <label>
-                    <input type="radio" name="feedback1" value="dont-know">
+                    <input type="radio" name="feedback1" value="dont-know" onclick="toggleFeedbackOptions()">
                     I don't know this whisky
                 </label>
             </div>

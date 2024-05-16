@@ -13,8 +13,8 @@ app = Flask(__name__, static_url_path='', static_folder='../frontend')
 
 # Define the CSV file where feedback will be saved and load feature store data
 csv_filename = 'distillery_data.csv'
-FEATURE_STORE_PATH = '../data/processed/2023_09/whisky_features_100.csv'
-FEEDBACK_DIR = '../data/feedback/2024_05'
+FEATURE_STORE_PATH = os.path.join('..', 'data', 'processed', '2023_09', 'whisky_features_100.csv')
+FEEDBACK_DIR = os.path.join('..', 'data', 'feedback', '2024_05')
 os.makedirs(FEEDBACK_DIR, exist_ok=True)
 
 # Main page
@@ -27,7 +27,7 @@ def index():
 @app.route('/submitFeedback', methods=['POST'])
 def submit_feedback():
     data = request.get_json()
-    required_fields = ['whisky1', 'recommendedWhisky', 'feedback1']
+    required_fields = ['whisky1', 'whisky2', 'whisky3', 'recommendedWhisky', 'feedback1', 'timestamp']
 
     # Check if all required fields are provided
     if not all(field in data for field in required_fields):
@@ -35,24 +35,32 @@ def submit_feedback():
 
     try:
         # Extract feedback data
+        print(data)  # Log the incoming data
         whisky1 = data['whisky1']
+        whisky2 = data['whisky2']
+        whisky3 = data['whisky3']
         recommended_whisky = data['recommendedWhisky']
         feedback1 = data['feedback1']
         rating = data.get('rating')  # This field is optional
         feedback2 = data.get('feedback2', '')  # This field is optional
+        timestamp = data['timestamp']
 
-        # Generate a unique filename based on timestamp
-        timestamp = pd.Timestamp.now().strftime('%Y%m%d%H%M%S')
-        feedback_file = os.path.join(FEEDBACK_DIR, f'feedback_{timestamp}.csv')
+        # Sanitize timestamp for use in filenames
+        sanitized_timestamp = timestamp.replace(':', '').replace('-', '').replace('.', '').replace('T', '_').replace('Z', '')
+
+        # Generate a unique filename based on sanitized timestamp
+        feedback_file = os.path.join(FEEDBACK_DIR, f'feedback_{sanitized_timestamp}.csv')
+        print(f"Writing to file: {feedback_file}")  # Log the feedback file path
 
         # Save feedback data to CSV
         with open(feedback_file, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['whisky1', 'recommendedWhisky', 'feedback1', 'rating', 'feedback2'])
-            writer.writerow([whisky1, recommended_whisky, feedback1, rating, feedback2])
+            writer.writerow(['whisky1', 'whisky2', 'whisky3', 'recommendedWhisky', 'feedback1', 'rating', 'feedback2', 'timestamp'])
+            writer.writerow([whisky1, whisky2, whisky3, recommended_whisky, feedback1, rating, feedback2, timestamp])
 
         return jsonify({'message': 'Feedback submitted successfully'}), 200
     except Exception as e:
+        print(f"Error occurred: {e}")  # Log the error
         return jsonify({'error': str(e)}), 500
 
 
@@ -70,8 +78,9 @@ def recommend_whisky_endpoint():
 
         recommended_whisky = recommended_whisky_info["Recommended Whisky"]
 
-        return jsonify({'recommended_whisky': recommended_whisky})  # TODO: First extract the name only, then expand to get all data
+        return jsonify({'recommended_whisky': recommended_whisky})
     except Exception as e:
+        print(f"Error occurred: {e}")  # Log the error
         return jsonify({'error': str(e)}), 500
 
 

@@ -62,6 +62,14 @@ make install
 Run python app.py in the backend folder and then access on your browser at http://localhost:8000
 
 
+6. Running Tests
+
+To run tests, use the following command: make test
+
+7. Linting and Formatting
+
+To lint the code using pylint and format it using black, run the commands make lint of make format, respectively.
+
 ## Project Components
 
 ### Web Scraping
@@ -76,19 +84,6 @@ The data_parsing_and_modeling.py script processes the outputs of the whisky scra
 
 The whisky_recommender_model.py script generates recommendations based on user-selected whiskies. It uses cosine similarity to compare user-selected whisky profiles with other whiskies in the dataset.
 
-
-Running Tests
-
-To run tests, use the following command:
-
-make test
-
-Linting and Formatting
-
-To lint the code using pylint and format it using black, run:
-
-make lint
-make format
 
 ## Next steps: Deploying to Production
 

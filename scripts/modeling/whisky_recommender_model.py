@@ -91,7 +91,7 @@ def recommend_whisky(whisky_data_file, user_whiskies):
     )
     top_additional_notes = additional_notes[:3]
 
-    # Return recommendation details as a dictionary
+    # Return modeling details as a dictionary
     return {
         "Recommended Whisky": recommended_whisky,
         "Top Three Common High Tasting Notes": common_high_notes[:3],

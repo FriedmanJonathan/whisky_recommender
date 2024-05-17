@@ -6,17 +6,20 @@ The Whisky Recommender Project aims to help users discover new whiskies based on
 
 ## Project Structure
 
-Note: needs some editing
+The basic structure of the project is as follows:
 
 ```plaintext
 whisky_recommender/
 ├── backend/
 │   ├── app.py
-│   ├── feedback.csv
 ├── data/
+│   ├── feedback/
+│   │   └── 2024_05/
+│   │       └── feedback_file_dated1.csv
+│   │       └── feedback_file_dated2.csv
 │   ├── processed/
 │   │   └── 2024_05/
-│   │       └── distillery_data.csv
+│   │       └── whisky_features.csv
 │   └── raw/
 │       └── 2024_05/
 │           ├── whisky_main_page_with_ratings.csv
@@ -27,10 +30,17 @@ whisky_recommender/
 │   ├── style.css
 │   └── distillery_data.csv
 ├── scripts/
-│   ├── data_parsing_and_modeling.py
-│   ├── whisky_recommender_model.py
+│   ├── processing/
+│   │   └── data_parsing_and_cleaning.csv
+│   ├── modeling/
+│   │   └── whisky_recommender_model.py
+│   ├── ingestion/
+│   │   └── whisky_com_main_page_scraper.csv
+│   │   └── whisky_com_secondary_pages_scraper.csv
 ├── tests/
 │   └── test_data_parsing.py
+├── gitignore
+├── LICENSE
 ├── Makefile
 ├── requirements.txt
 └── README.md
@@ -93,6 +103,8 @@ The ultimate goal is to create a web interface where users can select their favo
 ## Feedback and Contributions
 
 Feedback and contributions are welcome! Please fork the repository and create a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
-License
+
+
+## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.

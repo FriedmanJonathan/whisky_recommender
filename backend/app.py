@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify, send_from_directory
 # Add the parent directory to sys.path to access the scripts package
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from scripts.recommendation.whisky_recommender_model import recommend_whisky
+from scripts.modeling.whisky_recommender_model import recommend_whisky
 
 app = Flask(__name__, static_url_path='', static_folder='../frontend')
 

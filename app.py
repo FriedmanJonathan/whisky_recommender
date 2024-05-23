@@ -5,16 +5,16 @@ import os
 from flask import Flask, request, jsonify, send_from_directory
 
 # Add the parent directory to sys.path to access the scripts package
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '')))
 
 from scripts.modeling.whisky_recommender_model import recommend_whisky
 
-app = Flask(__name__, static_url_path='', static_folder='../frontend')
+app = Flask(__name__, static_url_path='', static_folder='./frontend')
 
 # Define the CSV file where feedback will be saved and load feature store data
 csv_filename = 'distillery_data.csv'
-FEATURE_STORE_PATH = os.path.join('..', 'data', 'processed', '2023_09', 'whisky_features_100.csv')
-FEEDBACK_DIR = os.path.join('..', 'data', 'feedback', '2024_05')
+FEATURE_STORE_PATH = os.path.join('', 'data', 'processed', '2023_09', 'whisky_features_100.csv')
+FEEDBACK_DIR = os.path.join('', 'data', 'feedback', '2024_05')
 os.makedirs(FEEDBACK_DIR, exist_ok=True)
 
 # Main page

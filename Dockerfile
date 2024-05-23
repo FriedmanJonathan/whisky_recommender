@@ -5,7 +5,7 @@ FROM python:3.11.5-slim
 WORKDIR /app
 
 # Copy the backend directory contents into the container at /app
-COPY ./backend /app
+COPY . /app
 
 # Install any needed packages specified in requirements.txt
 # Ensure your requirements.txt is accessible; adjust path if it's outside backend

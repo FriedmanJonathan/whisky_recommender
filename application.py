@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '')))
 
 from scripts.modeling.whisky_recommender_model import recommend_whisky
 
-app = Flask(__name__, static_url_path='', static_folder='./frontend')
+application = Flask(__name__, static_url_path='', static_folder='./frontend')
 
 # Define the CSV file where feedback will be saved and load feature store data
 csv_filename = 'distillery_data.csv'
@@ -18,13 +18,13 @@ FEEDBACK_DIR = os.path.join('', 'data', 'feedback', '2024_05')
 os.makedirs(FEEDBACK_DIR, exist_ok=True)
 
 # Main page
-@app.route('/')
+@application.route('/')
 def index():
-    return send_from_directory(app.static_folder, 'index.html')
+    return send_from_directory(application.static_folder, 'index.html')
 
 
 # Feedback submission
-@app.route('/submitFeedback', methods=['POST'])
+@application.route('/submitFeedback', methods=['POST'])
 def submit_feedback():
     data = request.get_json()
     required_fields = ['whisky1', 'whisky2', 'whisky3', 'recommendedWhisky', 'feedback1', 'timestamp']
@@ -64,7 +64,7 @@ def submit_feedback():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/recommend', methods=['POST'])
+@application.route('/recommend', methods=['POST'])
 def recommend_whisky_endpoint():
     data = request.get_json()
 
@@ -85,4 +85,4 @@ def recommend_whisky_endpoint():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8000)
+    application.run(debug=True, host='0.0.0.0', port=8000)

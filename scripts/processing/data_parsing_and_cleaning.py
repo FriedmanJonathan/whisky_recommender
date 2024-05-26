@@ -5,7 +5,7 @@ The functions perform various tasks such as loading and merging data,
 cleaning features, one-hot encoding, dropping unnecessary columns,
 and creating a distillery data table.
 
-Author: [Your Name]
+Author: Yoni Friedman
 
 """
 

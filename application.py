@@ -43,6 +43,7 @@ def submit_feedback():
         feedback1 = data['feedback1']
         rating = data.get('rating')  # This field is optional
         feedback2 = data.get('feedback2', '')  # This field is optional
+        experience = data['experience']  # New field for whisky experience
         timestamp = data['timestamp']
 
         # Sanitize timestamp for use in filenames
@@ -55,8 +56,8 @@ def submit_feedback():
         # Save feedback data to CSV
         with open(feedback_file, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['whisky1', 'whisky2', 'whisky3', 'recommendedWhisky', 'feedback1', 'rating', 'feedback2', 'timestamp'])
-            writer.writerow([whisky1, whisky2, whisky3, recommended_whisky, feedback1, rating, feedback2, timestamp])
+            writer.writerow(['whisky1', 'whisky2', 'whisky3', 'recommendedWhisky', 'feedback1', 'rating', 'feedback2', 'experience', 'timestamp'])
+            writer.writerow([whisky1, whisky2, whisky3, recommended_whisky, feedback1, rating, feedback2, experience, timestamp])
 
         return jsonify({'message': 'Feedback submitted successfully'}), 200
     except Exception as e:

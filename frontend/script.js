@@ -155,6 +155,7 @@ async function submitFeedback() {
     const feedback1 = document.querySelector('input[name="feedback1"]:checked').value;
     const rating = feedback1 === "know" ? document.getElementById('rating').value || null : null;
     const feedback2 = document.getElementById('feedback2').value || "";
+    const experience = document.getElementById('experience').value;
     const whisky1 = document.getElementById("distillery1").value + ' ' + document.getElementById("whisky1").value;
     const whisky2 = document.getElementById("distillery2").value + ' ' + document.getElementById("whisky2").value;
     const whisky3 = document.getElementById("distillery3").value + ' ' + document.getElementById("whisky3").value;
@@ -171,6 +172,7 @@ async function submitFeedback() {
         feedback1: feedback1,
         rating: rating,
         feedback2: feedback2,
+        experience: experience,
         timestamp: timestamp
     };
 

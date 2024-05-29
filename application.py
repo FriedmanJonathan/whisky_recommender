@@ -17,6 +17,7 @@ application = Flask(__name__, static_url_path='', static_folder='./frontend')
 # Environment setup
 IS_LOCAL = os.getenv('IS_LOCAL', 'True') == 'True'
 S3_BUCKET = os.getenv('S3_BUCKET')  # Only necessary when not local
+FEATURE_STORE_PATH = os.path.join('', 'data', 'processed', '2023_09', 'whisky_features_100.csv')
 
 # Define the directories and files based on whether the app is running locally or on AWS
 if IS_LOCAL:
@@ -80,7 +81,7 @@ def recommend_whisky_endpoint():
         return jsonify({'error': 'Invalid input, list of whisky names expected'}), 400
 
     try:
-        recommended_whisky = recommend_whisky(data['whisky_names'])
+        recommended_whisky = recommend_whisky(FEATURE_STORE_PATH, data['whisky_names'])
         return jsonify({'recommended_whisky': recommended_whisky})
     except Exception as e:
         print(f"Error occurred: {e}")

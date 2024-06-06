@@ -57,15 +57,15 @@ def submit_feedback():
         feedback_file_name = f'feedback_{sanitized_timestamp}.csv'
 
         # Decide storage based on environment
+        feedback_file = os.path.join(FEEDBACK_DIR, feedback_file_name)
         if IS_LOCAL:
-            feedback_file = os.path.join(FEEDBACK_DIR, feedback_file_name)
             with open(feedback_file, 'w', newline='') as file:
                 file.write(csv_content)
             print(f"Feedback written to local file: {feedback_file}")
         else:
             import boto3
             s3 = boto3.client('s3')
-            s3.put_object(Bucket=S3_BUCKET, Key=feedback_file_name, Body=csv_content.encode('utf-8'))
+            s3.put_object(Bucket=S3_BUCKET, Key=feedback_file, Body=csv_content.encode('utf-8'))
             print(f"Feedback written to S3 bucket {S3_BUCKET}")
 
         return jsonify({'message': 'Feedback submitted successfully'}), 200

@@ -81,8 +81,10 @@ def recommend_whisky_endpoint():
         return jsonify({'error': 'Invalid input, list of whisky names expected'}), 400
 
     try:
-        recommended_whisky = recommend_whisky(FEATURE_STORE_PATH, data['whisky_names'])
+        recommendation = recommend_whisky(FEATURE_STORE_PATH, data['whisky_names'])
+        recommended_whisky = recommendation["Recommended Whisky"]
         return jsonify({'recommended_whisky': recommended_whisky})
+
     except Exception as e:
         print(f"Error occurred: {e}")
         return jsonify({'error': str(e)}), 500

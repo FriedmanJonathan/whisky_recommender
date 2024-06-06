@@ -30,6 +30,7 @@ def recommend_whisky(whisky_data_file, user_whiskies):
     """
     # Load the whisky DataFrame
     whisky_df = pd.read_csv(whisky_data_file)
+    print(whisky_df.head())
 
     # Filter the DataFrame to get the data for the user's selected whiskies
     user_whisky_data = whisky_df[whisky_df["full_name"].isin(user_whiskies)]

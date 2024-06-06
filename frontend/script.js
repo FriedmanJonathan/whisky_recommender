@@ -130,6 +130,7 @@ async function recommendWhisky() {
         // Process the server's response
         const result = await response.json();
         console.log("Recommendation Result:", result);
+        console.log("Recommended Whisky:", result.recommended_whisky)
         document.getElementById("recommendedWhisky").textContent = result.recommended_whisky;
     } catch (error) {
         console.error('Error:', error);

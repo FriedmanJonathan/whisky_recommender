@@ -99,6 +99,10 @@ The whisky_recommender_model.py script generates recommendations based on user-s
 
 The ultimate goal is to create a web interface where users can select their favorite whiskies and receive recommendations. The frontend consists of HTML, JavaScript, and CSS files, while the backend is built with Python.
 
+eb create whisky-recommender --single
+We use single to not introduce a load balancer not multiple EC2 instances as this is a small app for now. 
+
+To delete, we can make use of the delete_vpc_and_dependencies_on_aws.py script. This is 
 
 ## Feedback and Contributions
 

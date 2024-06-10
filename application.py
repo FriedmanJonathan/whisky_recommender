@@ -34,6 +34,10 @@ def index():
 @application.route('/submitFeedback', methods=['POST'])
 def submit_feedback():
     data = request.get_json()
+
+    # Log the data
+    print(data)
+
     required_fields = ['whisky1', 'whisky2', 'whisky3', 'recommendedWhisky', 'feedback1', 'timestamp']
     optional_fields = ['rating', 'feedback2', 'experience']
 
@@ -41,9 +45,6 @@ def submit_feedback():
         return jsonify({'error': 'Missing data'}), 400
 
     try:
-        # Log incoming data
-        print(data)
-
         # Prepare feedback data for CSV
         header = required_fields + optional_fields
         feedback_entries = [data.get(field, '') for field in header]

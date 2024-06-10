@@ -97,6 +97,14 @@ The whisky_recommender_model.py script generates recommendations based on user-s
 
 ## Next steps: Deploying to Production
 
+
+When running locally via Docker, make sure:
+
+1. Your .env file has the correct settings: IS_LOCAL = True.
+2. Command is docker build whisky-recommender 
+
+3. eb setenv IS_LOCAL=False S3_BUCKET=whisky-recommender
+
 The ultimate goal is to create a web interface where users can select their favorite whiskies and receive recommendations. The frontend consists of HTML, JavaScript, and CSS files, while the backend is built with Python.
 
 eb create whisky-recommender --single

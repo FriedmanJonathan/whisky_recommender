@@ -1,6 +1,7 @@
 # Python virtual environment
 .whisky_rec_venv/
 
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

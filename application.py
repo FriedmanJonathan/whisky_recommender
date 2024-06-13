@@ -71,8 +71,10 @@ def submit_feedback():
             logger.info(f"Feedback written to local file: {local_feedback_file}")
         else:
             import boto3
-            s3 = boto3.client('s3')
-            logger.info(f"Attempting to write feedback to S3 bucket: {S3_BUCKET}, Key: {feedback_file_path}")
+            # Specify the region where your bucket is located
+            region_name = 'il-central-1'  # Replace with your bucket's region
+            s3 = boto3.client('s3', region_name=region_name)
+            logger.info(f"Attempting to write feedback to S3 bucket: {S3_BUCKET}, Key: {feedback_file_path} in region: {region_name}")
             try:
                 response = s3.put_object(Bucket=S3_BUCKET, Key=feedback_file_path, Body=csv_content.encode('utf-8'))
                 logger.info(f"S3 put_object response: {response}")
@@ -85,6 +87,7 @@ def submit_feedback():
     except Exception as e:
         logger.error(f"Error occurred: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
+
 
 
 # Recommendation endpoint

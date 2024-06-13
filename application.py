@@ -46,6 +46,7 @@ def submit_feedback():
     optional_fields = ['rating', 'feedback2', 'experience']
 
     if not all(field in data for field in required_fields):
+        logger.error("Missing data in the feedback submission")
         return jsonify({'error': 'Missing data'}), 400
 
     try:
@@ -71,13 +72,20 @@ def submit_feedback():
         else:
             import boto3
             s3 = boto3.client('s3')
-            s3.put_object(Bucket=S3_BUCKET, Key=feedback_file_path, Body=csv_content.encode('utf-8'))
-            logger.info(f"Feedback written to S3 bucket {S3_BUCKET}")
+            logger.info(f"Attempting to write feedback to S3 bucket: {S3_BUCKET}, Key: {feedback_file_path}")
+            try:
+                response = s3.put_object(Bucket=S3_BUCKET, Key=feedback_file_path, Body=csv_content.encode('utf-8'))
+                logger.info(f"S3 put_object response: {response}")
+                logger.info(f"Feedback written to S3 bucket {S3_BUCKET}")
+            except Exception as e:
+                logger.error(f"Failed to write to S3 bucket: {e}", exc_info=True)
+                return jsonify({'error': str(e)}), 500
 
         return jsonify({'message': 'Feedback submitted successfully'}), 200
     except Exception as e:
-        logger.error(f"Error occurred: {e}")
+        logger.error(f"Error occurred: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
+
 
 # Recommendation endpoint
 @application.route('/recommend', methods=['POST'])

@@ -3,6 +3,7 @@ import sys
 import os
 import logging
 from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -14,6 +15,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '')))
 from scripts.modeling.whisky_recommender_model import recommend_whisky
 
 application = Flask(__name__, static_url_path='', static_folder='./frontend')
+CORS(application)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

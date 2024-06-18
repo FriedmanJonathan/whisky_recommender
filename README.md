@@ -112,6 +112,94 @@ We use single to not introduce a load balancer not multiple EC2 instances as thi
 
 To delete, we can make use of the delete_vpc_and_dependencies_on_aws.py script. This is 
 
+
+
+
+## Deployment on AWS
+
+This version of the Whisky Recommender is a web application designed to recommend whiskies based on user preferences. The application is built using Flask and can be deployed on AWS Elastic Beanstalk. Users can submit feedback, which is stored in an S3 bucket.
+
+### Prerequisites
+- AWS account
+- AWS CLI installed and configured
+- Appropriate IAM user with permissions to deploy applications and interact with S3
+
+### Steps to Deploy
+
+1. **Set Up Environment Variables**:
+   - Create a `.env` file in the root directory of your project.
+   - Add the following environment variables:
+     ```plaintext
+     IS_LOCAL=False
+     S3_BUCKET=your-s3-bucket-name
+     ```
+
+2. **Create an S3 Bucket**:
+   - Create an S3 bucket in the same region as your Elastic Beanstalk environment.
+   - Ensure your IAM user has permissions to `s3:PutObject`, `s3:GetObject`, and `s3:ListBucket` for this bucket.
+
+3. **Give Appropriate Permissions**:
+   - Ensure the IAM role associated with your Elastic Beanstalk environment has the necessary permissions to access the S3 bucket.
+   - Update your bucket policy to allow access from the Elastic Beanstalk instance profile role:
+     ```json
+     {
+         "Version": "2012-10-17",
+         "Statement": [
+             {
+                 "Effect": "Allow",
+                 "Principal": {
+                     "AWS": "arn:aws:iam::<account-id>:role/<instance-profile-role-name>"
+                 },
+                 "Action": [
+                     "s3:PutObject",
+                     "s3:GetObject",
+                     "s3:ListBucket"
+                 ],
+                 "Resource": [
+                     "arn:aws:s3:::your-s3-bucket-name",
+                     "arn:aws:s3:::your-s3-bucket-name/*"
+                 ]
+             }
+         ]
+     }
+     ```
+
+4. **Deploy to AWS Elastic Beanstalk**:
+   - Use the following commands to deploy:
+     ```bash
+     eb init # here you'll interactively configure region, Docker setup, etc. 
+     eb create my-whisky-recommender-env --instance_type t3.micro --single
+     eb deploy
+     ```
+
+5. **Set Up Region Compatibility**:
+   - Ensure that the S3 bucket and Elastic Beanstalk environment are in the same AWS region to avoid region compatibility issues.
+
+6. **Remove the Project**:
+   - To remove the project, use the script provided:
+     ```bash
+     python delete_vpc_and_dependencies_on_aws.py
+     ```
+
+### Environment Variables
+- `IS_LOCAL`: Set to `True` for local development and `False` for deployment on AWS.
+- `S3_BUCKET`: The name of the S3 bucket to store feedback.
+
+## Future Plans
+### Route 53 Integration
+- **Set Up a Domain**: Plan to use Route 53 to set up a custom domain for the application, improving accessibility and professional appearance.
+
+### AWS Step Functions and Lambda
+- **Automate Monthly Updates**: Implement AWS Step Functions and Lambda to automate the monthly scraping and updating of whisky data from the website.
+
+### Current Limitations
+- **Website Loading Issues**: The whisky website currently has loading issues that prevent the scraping script from accessing all content. The script cannot scroll past the first page, limiting the data that can be scraped and processed.
+
+## Conclusion
+This project demonstrates a full-stack web application deployment using AWS services. Future enhancements aim to automate data updates and improve user experience with custom domain integration.
+
+
+
 ## Feedback and Contributions
 
 Feedback and contributions are welcome! Please fork the repository and create a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.

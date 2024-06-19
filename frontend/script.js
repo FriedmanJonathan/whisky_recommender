@@ -5,6 +5,8 @@ function getBaseURL() {
     const hostname = window.location.hostname;
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
         return '';
+    } else if (hostname === 'http://whisky-recommender-env.eba-euqjnqtp.il-central-1.elasticbeanstalk.com') {
+        return '';
     } else {
         return '/whisky-recommender';
     }

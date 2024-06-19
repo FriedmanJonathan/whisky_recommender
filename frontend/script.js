@@ -1,5 +1,18 @@
 // Add this JavaScript code to dynamically load unique distillery options from the CSV file
 
+// Function to determine the base URL (local vs online, where we set things up to run as an extension of my personal webpage (jonathan-friedman.com/whisky-recommender)
+function getBaseURL() {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return '';
+    } else {
+        return '/whisky-recommender';
+    }
+}
+
+// Set base URL based on environment
+const baseURL = getBaseURL();
+
 // Function to load distillery options from the CSV file
 async function loadDistilleryOptions() {
     try {
@@ -119,7 +132,7 @@ async function recommendWhisky() {
 
     try {
         // Send the data to the backend for recommendations
-        const response = await fetch('/recommend', {
+        const response = await fetch(`${baseURL}/recommend`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -130,7 +143,7 @@ async function recommendWhisky() {
         // Process the server's response
         const result = await response.json();
         console.log("Recommendation Result:", result);
-        console.log("Recommended Whisky:", result.recommended_whisky)
+        console.log("Recommended Whisky:", result.recommended_whisky);
         document.getElementById("recommendedWhisky").textContent = result.recommended_whisky;
     } catch (error) {
         console.error('Error:', error);
@@ -178,7 +191,7 @@ async function submitFeedback() {
     };
 
     try {
-        const response = await fetch('/submitFeedback', {
+        const response = await fetch(`${baseURL}/submitFeedback`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

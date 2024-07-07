@@ -151,6 +151,7 @@ async function recommendWhisky() {
         const result = await response.json();
         console.log("Recommendation Result:", result);
         console.log("Recommended Whisky:", result.recommended_whisky);
+        console.log("Recommended Whisky URL:", result.recommended_whisky_url);
         document.getElementById("recommendedWhisky").textContent = result.recommended_whisky;
 
         // Add hyperlink for more information

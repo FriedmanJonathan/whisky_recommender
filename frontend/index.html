@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whisky Recommender</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        header h1 {
+            font-size: 24px; /* Adjust as needed */
+        }
+        h2 {
+            font-size: 18px; /* Adjust as needed */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -96,6 +104,7 @@
             <div class="feedback-option">
                 <label for="rating">Rate the recommendation:</label>
                 <select id="rating" name="rating">
+                    <option value="" selected>Select a rating</option>
                     <option value="1">1 - Lousy</option>
                     <option value="2">2 - Poor</option>
                     <option value="3">3 - Reasonable</option>

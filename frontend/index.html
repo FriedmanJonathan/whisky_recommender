@@ -12,11 +12,6 @@
         h2 {
             font-size: 18px; /* Adjust as needed */
         }
-        .feedback-option label,
-        .feedback-option select {
-            display: block;
-            margin-top: 5px;
-        }
     </style>
 </head>
 <body>
@@ -92,7 +87,7 @@
         </form>
         <h2>Recommended Whisky:</h2>
         <p id="recommendedWhisky"></p>
-        <p id="whiskyInfo" style="display: none;">More information about this whisky can be found <a id="whiskyLink" href="#" target="_blank">here</a>.</p>
+        <p id="moreInfo" style="display: none;">More information about this whisky can be found <a id="whiskyLink" href="#" target="_blank">here</a>.</p>
         <h2>Feedback</h2>
         <form id="feedbackForm">
             <div class="feedback-option">
@@ -105,7 +100,6 @@
                     I don't know this whisky
                 </label>
             </div>
-            <br>
             <div class="feedback-option">
                 <label for="rating">Rate the recommendation:</label>
                 <select id="rating" name="rating">
@@ -118,12 +112,10 @@
                     <option value="NA">NA - Review not applicable</option>
                 </select>
             </div>
-            <br>
             <div class="feedback-option">
                 <label for="feedback2">Additional feedback (optional):</label>
                 <input type="text" id="feedback2" name="feedback2">
             </div>
-            <br>
             <div class="feedback-option">
                 <label for="experience">Select your whisky experience level:</label>
                 <select id="experience" name="experience">
@@ -134,7 +126,6 @@
                     <option value="Unfamiliar">I'm totally unfamiliar with whisky but I think this app is super cool!</option>
                 </select>
             </div>
-            <br>
             <div class="button-container">
                 <button type="button" onclick="submitFeedback()">Submit Feedback</button>
             </div>

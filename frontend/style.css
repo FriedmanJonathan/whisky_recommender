@@ -28,9 +28,10 @@ h2 {
 form {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
 }
 
-input[type="text"], input[type="number"] {
+input[type="text"], input[type="number"], select {
     width: 100%;
     padding: 0.5rem;
     margin: 0.5rem 0;
@@ -73,6 +74,8 @@ label {
 /* Add spacing between the button and the elements above it */
 .feedback-option {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Ensure button-container div is block level with spacing */

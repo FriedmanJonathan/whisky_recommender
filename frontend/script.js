@@ -110,6 +110,7 @@ async function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
 // Model operation: this function operate the model when the user clicks the 'recommend' button:
 // Simple functionality placeholder: simply add up the three names
 // Modify the recommendWhisky function to send a POST request to your backend API endpoint
+// Function to handle whisky recommendation
 async function recommendWhisky() {
     // Collect whisky and distillery values
     const distillery1 = document.getElementById("distillery1").value;
@@ -124,22 +125,14 @@ async function recommendWhisky() {
     const whiskyWithDistillery2 = `${distillery2} ${whisky2}`;
     const whiskyWithDistillery3 = `${distillery3} ${whisky3}`;
 
-    // Log these values to verify correct data collection
-    console.log("Whisky with Distillery 1:", whiskyWithDistillery1);
-    console.log("Whisky with Distillery 2:", whiskyWithDistillery2);
-    console.log("Whisky with Distillery 3:", whiskyWithDistillery3);
-
     // Prepare the data to send to the backend
     const data = {
         whisky_names: [whiskyWithDistillery1, whiskyWithDistillery2, whiskyWithDistillery3]
     };
 
-    console.log("whisky names", data);
-    console.log("Stringified", JSON.stringify(data));
-
     try {
         // Send the data to the backend for recommendations
-        const response = await fetch(`${baseURL}/recommend`, {
+        const response = await fetch('/recommend', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -149,20 +142,19 @@ async function recommendWhisky() {
 
         // Process the server's response
         const result = await response.json();
-        console.log("Recommendation Result:", result);
-        console.log("Recommended Whisky:", result.recommended_whisky);
-        console.log("Recommended Whisky URL:", result.recommended_whisky_url);
         document.getElementById("recommendedWhisky").textContent = result.recommended_whisky;
 
-        // Add hyperlink for more information
-        document.getElementById("moreInfo").innerHTML = `More information about this whisky can be found <a href="${result.recommended_whisky_url}" target="_blank">here</a>.`;
-
+        // Make the 'moreInfo' element visible and set the innerHTML
+        const moreInfoElement = document.getElementById("moreInfo");
+        moreInfoElement.style.display = 'block';
+        moreInfoElement.innerHTML = `More information about this whisky can be found <a href="${result.recommended_whisky_url}" target="_blank">here</a>.`;
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to fetch recommendation. Please try again.');
     }
 }
 
+// Function to submit feedback
 // Function to submit feedback
 async function submitFeedback() {
     const feedbackForm = document.getElementById('feedbackForm');
@@ -191,7 +183,7 @@ async function submitFeedback() {
     };
 
     try {
-        const response = await fetch(`${baseURL}/submitFeedback`, {
+        const response = await fetch('/submitFeedback', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

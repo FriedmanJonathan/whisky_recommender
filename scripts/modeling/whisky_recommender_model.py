@@ -49,7 +49,7 @@ def recommend_whisky(whisky_data_file, user_whiskies):
 
     # Convert cosine similarity results to a DataFrame
     similarity_df = pd.DataFrame(
-        {"full_name": whisky_df["full_name"], "Cosine_Similarity": cosine_sim[0]}
+        {"full_name": whisky_df["full_name"], "whisky_url": whisky_df["whisky_url"], "Cosine_Similarity": cosine_sim[0]}
     )
 
     # Sort whiskies by similarity in descending order

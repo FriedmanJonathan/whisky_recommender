@@ -60,6 +60,11 @@ def recommend_whisky(whisky_data_file, user_whiskies):
         ~similarity_df["full_name"].isin(user_whiskies)
     ].iloc[0]["full_name"]
 
+    # Extract the appropriate URL to be used as a hyperlink
+    recommended_whisky_url = similarity_df[
+        ~similarity_df["full_name"].isin(user_whiskies)
+    ].iloc[0]["whisky_url"]
+
     # Extract tasting notes for the recommended whisky
     recommended_whisky_notes = whisky_df.loc[
         whisky_df["full_name"] == recommended_whisky, user_features.columns
@@ -97,6 +102,7 @@ def recommend_whisky(whisky_data_file, user_whiskies):
         "Recommended Whisky": recommended_whisky,
         "Top Three Common High Tasting Notes": common_high_notes[:3],
         "Top Three Additional Tasting Notes in Recommended Whisky": top_additional_notes,
+        "URL": recommended_whisky_url,
     }
 
 

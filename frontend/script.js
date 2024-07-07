@@ -31,9 +31,12 @@ async function loadDistilleryOptions() {
             if (distillery) distilleries.add(distillery.trim());
         });
 
+        // Sort distilleries alphabetically
+        const sortedDistilleries = Array.from(distilleries).sort();
+
         // Populate distillery dropdowns
         const distillerySelects = document.querySelectorAll('.distillery-select');
-        distilleries.forEach((distillery) => {
+        sortedDistilleries.forEach((distillery) => {
             distillerySelects.forEach((select) => {
                 const option = document.createElement("option");
                 option.value = distillery;
@@ -70,6 +73,9 @@ async function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
             distilleryWhiskies[distillery].push(whiskyName);
         }
 
+        // Sort whiskies alphabetically
+        const whiskies = (distilleryWhiskies[selectedDistillery] || []).sort();
+
         // Update the whisky dropdown based on the selected distillery
         whiskySelect.innerHTML = ""; // Clear the current options
 
@@ -81,7 +87,6 @@ async function updateWhiskyDropdown(selectedDistillerySelect, whiskySelectId) {
         defaultOption.selected = true;
         whiskySelect.appendChild(defaultOption);
 
-        const whiskies = distilleryWhiskies[selectedDistillery] || [];
         if (whiskies.length === 0) {
             const option = document.createElement("option");
             option.value = "";
@@ -147,21 +152,13 @@ async function recommendWhisky() {
         console.log("Recommendation Result:", result);
         console.log("Recommended Whisky:", result.recommended_whisky);
         document.getElementById("recommendedWhisky").textContent = result.recommended_whisky;
+
+        // Add hyperlink for more information
+        document.getElementById("moreInfo").innerHTML = `More information about this whisky can be found <a href="${result.recommended_whisky_url}" target="_blank">here</a>.`;
+
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to fetch recommendation. Please try again.');
-    }
-}
-
-// Add this function to toggle the display of rating or reason based on the selected feedback
-function toggleFeedbackOptions() {
-    const feedbackOption = document.querySelector('input[name="feedback1"]:checked').value;
-    const ratingSection = document.getElementById('ratingSection');
-
-    if (feedbackOption === "know") {
-        ratingSection.style.display = 'block';
-    } else {
-        ratingSection.style.display = 'none';
     }
 }
 
@@ -169,7 +166,7 @@ function toggleFeedbackOptions() {
 async function submitFeedback() {
     const feedbackForm = document.getElementById('feedbackForm');
     const feedback1 = document.querySelector('input[name="feedback1"]:checked').value;
-    const rating = feedback1 === "know" ? document.getElementById('rating').value || null : null;
+    const rating = document.getElementById('rating').value;
     const feedback2 = document.getElementById('feedback2').value || "";
     const experience = document.getElementById('experience').value;
     const whisky1 = document.getElementById("distillery1").value + ' ' + document.getElementById("whisky1").value;
@@ -205,7 +202,6 @@ async function submitFeedback() {
             alert('Feedback submitted successfully!');
             // Clear form or perform any other necessary actions
             feedbackForm.reset();
-            toggleFeedbackOptions(); // Ensure feedback form resets properly
         } else {
             alert('Failed to submit feedback. Please try again.');
         }

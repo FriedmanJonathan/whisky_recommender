@@ -90,8 +90,6 @@ def submit_feedback():
         logger.error(f"Error occurred: {e}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
-
-
 # Recommendation endpoint
 @application.route('/recommend', methods=['POST'])
 def recommend_whisky_endpoint():
@@ -104,8 +102,9 @@ def recommend_whisky_endpoint():
     try:
         recommendation = recommend_whisky(FEATURE_STORE_PATH, data['whisky_names'])
         recommended_whisky = recommendation["Recommended Whisky"]
-        logger.info(f"Recommended whisky: {recommended_whisky}")
-        return jsonify({'recommended_whisky': recommended_whisky})
+        recommended_whisky_url = recommendation["URL"]
+        logger.info(f"Recommended whisky: {recommended_whisky}, URL: {recommended_whisky_url}")
+        return jsonify({'recommended_whisky': recommended_whisky, 'recommended_whisky_url': recommended_whisky_url})
     except Exception as e:
         logger.error(f"Error occurred: {e}")
         return jsonify({'error': str(e)}), 500

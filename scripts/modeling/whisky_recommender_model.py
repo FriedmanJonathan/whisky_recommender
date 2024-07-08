@@ -78,7 +78,7 @@ def recommend_whisky(whisky_data_file, user_whiskies):
     for idx, (recommended_note, user_note) in enumerate(
         zip(recommended_whisky_notes, user_selected_notes)
     ):
-        if recommended_note >= 8 and user_note >= 8:
+        if recommended_note >= 1 and user_note >= 1:
             common_high_notes.append(user_features.columns[idx])
 
     # Sort the common high notes by their values in the recommended whisky
@@ -97,7 +97,7 @@ def recommend_whisky(whisky_data_file, user_whiskies):
     )
     top_additional_notes = additional_notes[:3]
 
-    common_high_notes_lowercase = [x.lower() for x in common_high_notes[:3]]
+    common_high_notes_lowercase = [x.lower()[5:].replace("_notes", "").replace("_", " ") for x in common_high_notes[:3]]
 
     # Return modeling details as a dictionary
     return {

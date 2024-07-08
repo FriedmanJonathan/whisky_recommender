@@ -147,7 +147,9 @@ async function recommendWhisky() {
         // Make the 'moreInfo' element visible and set the innerHTML
         const moreInfoElement = document.getElementById("moreInfo");
         moreInfoElement.style.display = 'block';
-        moreInfoElement.innerHTML = `More information about this whisky can be found <a href="${result.recommended_whisky_url}" target="_blank">here</a>.`;
+        moreInfoElement.innerHTML = `We think you will like this whisky since it too has ${result.recommended_whisky_note_1},
+                ${result.recommended_whisky_note_2}, and ${result.recommended_whisky_note_3} notes.
+                More information about this whisky can be found <a href="${result.recommended_whisky_url}" target="_blank">here</a>.`;
     } catch (error) {
         console.error('Error:', error);
         alert('Failed to fetch recommendation. Please try again.');

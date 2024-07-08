@@ -103,8 +103,14 @@ def recommend_whisky_endpoint():
         recommendation = recommend_whisky(FEATURE_STORE_PATH, data['whisky_names'])
         recommended_whisky = recommendation["Recommended Whisky"]
         recommended_whisky_url = recommendation["URL"]
+        recommended_whisky_notes = recommendation["Top Three Common High Tasting Notes"]
         logger.info(f"Recommended whisky: {recommended_whisky}, URL: {recommended_whisky_url}")
-        return jsonify({'recommended_whisky': recommended_whisky, 'recommended_whisky_url': recommended_whisky_url})
+        return jsonify({'recommended_whisky': recommended_whisky,
+                        'recommended_whisky_url': recommended_whisky_url,
+                        'recommended_whisky_note_1': recommended_whisky_notes[0],
+                        'recommended_whisky_note_2': recommended_whisky_notes[1],
+                        'recommended_whisky_note_3': recommended_whisky_notes[2]
+                        }, )
     except Exception as e:
         logger.error(f"Error occurred: {e}")
         return jsonify({'error': str(e)}), 500

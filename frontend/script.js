@@ -185,7 +185,7 @@ async function submitFeedback() {
     };
 
     try {
-        const response = await fetch('/submitFeedback', {
+        const response = await fetch(`${baseURL}/submitFeedback`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

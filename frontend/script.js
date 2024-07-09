@@ -132,7 +132,7 @@ async function recommendWhisky() {
 
     try {
         // Send the data to the backend for recommendations
-        const response = await fetch('/recommend', {
+        const response = await fetch(`${baseURL}/recommend`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)

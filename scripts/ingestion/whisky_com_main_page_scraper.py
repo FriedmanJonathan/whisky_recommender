@@ -28,11 +28,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 from memory_profiler import profile
 
 URL_PREFIX = "https://www.whisky.com"
-SERVICE = Service(r"C:\Users\yonif\Downloads\chromedriver.exe")
+SERVICE = Service(ChromeDriverManager().install())
 OPTIONS = webdriver.ChromeOptions()
 
 # Scroll parameters explicitly defined

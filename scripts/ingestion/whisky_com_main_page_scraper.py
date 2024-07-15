@@ -37,7 +37,7 @@ SERVICE = Service(ChromeDriverManager().install())
 OPTIONS = webdriver.ChromeOptions()
 
 # Scroll parameters explicitly defined
-NUM_SCROLLS = 105
+NUM_SCROLLS = 10
 PAGE_HEIGHT_TO_SCROLL = 2000
 
 

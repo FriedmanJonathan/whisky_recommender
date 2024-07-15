@@ -4,6 +4,7 @@ FROM amazonlinux:2
 # Install dependencies
 RUN yum install -y \
     unzip \
+    zip \
     libX11 \
     GConf2 \
     alsa-lib \

@@ -24,13 +24,8 @@ lint:
 
 .PHONY: build_layer
 build_layer:
-	# Navigate to the lambda_layer directory and build the Docker image
 	cd $(LAMBDA_LAYER_DIR) && docker build -t $(LAMBDA_DOCKER_IMAGE_NAME) .
-
-	# Run the Docker container to create the layer zip file
 	cd $(LAMBDA_LAYER_DIR) && docker run --rm -v $(CURDIR):/mnt/data $(LAMBDA_DOCKER_IMAGE_NAME)
-
-	# Output message
 	@echo "Lambda layer zip file created at $(LAMBDA_LAYER_DIR)/$(LAMBDA_LAYER_ZIP)"
 
 .PHONY: clean_layer

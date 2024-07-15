@@ -207,5 +207,5 @@ def scrape_whisky_website(url):
 if __name__ == "__main__":
     MAIN_URL = "https://www.whisky.com/whisky-database/bottle-search.html"
     whisky_data = scrape_whisky_website(MAIN_URL)
-    CSV_FILE_PATH = "../../data/raw/2024_07/whisky_main_page_with_ratings.csv"
+    CSV_FILE_PATH = "../../data/raw/2024_07/whisky_main_page_with_ratings_check.csv"
     save_data_to_csv(whisky_data, CSV_FILE_PATH)

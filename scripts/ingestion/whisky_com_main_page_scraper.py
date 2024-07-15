@@ -29,6 +29,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
+from memory_profiler import profile
 
 URL_PREFIX = "https://www.whisky.com"
 SERVICE = Service(r"C:\Users\yonif\Downloads\chromedriver.exe")
@@ -182,6 +183,7 @@ def save_data_to_csv(data, file_path):
     df.to_csv(file_path, index=False)
 
 
+@profile
 def scrape_whisky_website(url):
     """
     Main function to scrape whisky data from the specified URL.
@@ -204,5 +206,5 @@ def scrape_whisky_website(url):
 if __name__ == "__main__":
     MAIN_URL = "https://www.whisky.com/whisky-database/bottle-search.html"
     whisky_data = scrape_whisky_website(MAIN_URL)
-    CSV_FILE_PATH = "../../data/raw/2024_05/whisky_main_page_with_ratings.csv"
+    CSV_FILE_PATH = "../../data/raw/2024_07/whisky_main_page_with_ratings.csv"
     save_data_to_csv(whisky_data, CSV_FILE_PATH)

@@ -22,10 +22,6 @@ import matplotlib.pyplot as plt
 import time
 
 zero_time = time.perf_counter()
-from tqdm import tqdm
-
-# This allows to show progress of a for loop, example for fpath in tqdm(fpaths, desc="Looping over fpaths")):
-
 
 # STEP 1: Scraping the WhiskyBase website
 
@@ -195,6 +191,6 @@ for distillery_url in addresses_of_major_distilleries:
 
 # Storing the data from the main page into dataframe, then as a CSV file:
 whiskies_df = pd.DataFrame(data=core_range_data, columns=core_range_data_header)
-whiskies_df.to_csv('data/Whiskies.csv')
+whiskies_df.to_csv('../../data/raw/2024_07/whisky_base_whiskies.csv')
 reviews_df = pd.DataFrame(data=reviews_data, columns=reviews_data_header)
 reviews_df.to_csv('data/Reviews.csv')

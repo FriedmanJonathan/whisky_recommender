@@ -1,5 +1,7 @@
 # Python virtual environment
 .whisky_rec_venv/
+lambda_venv
+pandas_venv
 
 
 

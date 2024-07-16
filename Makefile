@@ -2,9 +2,9 @@ VENV_NAME = .whisky_rec_venv
 PYTHON = $(VENV_NAME)\Scripts\python
 
 # Define variables for Docker and Lambda layer
-LAMBDA_DOCKER_IMAGE_NAME = chromium-layer
-LAMBDA_LAYER_DIR = lambda_layer
-LAMBDA_LAYER_ZIP = chromium_layer.zip
+DOCKER_IMAGE_NAME = chromium-layer
+LAYER_DIR = lambda_layer
+LAYER_ZIP = chromium_layer.zip
 
 .PHONY: install
 install:
@@ -24,13 +24,13 @@ lint:
 
 .PHONY: build_layer
 build_layer:
-	cd $(LAMBDA_LAYER_DIR) && docker build -t $(LAMBDA_DOCKER_IMAGE_NAME) .
-	cd $(LAMBDA_LAYER_DIR) && docker run --rm -v $(CURDIR):/mnt/data $(LAMBDA_DOCKER_IMAGE_NAME)
-	@echo "Lambda layer zip file created at $(LAMBDA_LAYER_DIR)/$(LAMBDA_LAYER_ZIP)"
+	cd $(LAYER_DIR) && docker build -t $(DOCKER_IMAGE_NAME) . && \
+	docker run --rm -v "%cd%:/mnt/data" $(DOCKER_IMAGE_NAME)
+	@echo "Lambda layer zip file created at $(LAYER_DIR)/$(LAYER_ZIP)"
 
 .PHONY: clean_layer
 clean_layer:
-	del $(LAMBDA_LAYER_DIR)\$(LAMBDA_LAYER_ZIP)
+	del $(LAYER_DIR)\$(LAYER_ZIP)
 
 .PHONY: all
 all: install lint test

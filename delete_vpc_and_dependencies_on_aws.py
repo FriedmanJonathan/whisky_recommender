@@ -1,7 +1,26 @@
 import boto3
 from botocore.exceptions import ClientError
 
+
 def delete_vpc(vpc_id):
+    """
+    The following function deletes an active AWS VPC, including all of its dependencies.
+    This is a comprehensive cleanup process, as AWS configurations often auto-create
+    new instances and settings to maintain infrastructure resilience.
+
+    :param vpc_id: The ID of the VPC you want to delete.
+    :return: None
+    """
+
+    # Prerequisites:
+    # 1. AWS Account: Ensure you have an active AWS account with sufficient permissions to manage VPCs,
+    #    EC2 instances, NAT gateways, and other related resources.
+    # 2. AWS CLI Configuration: AWS CLI must be installed and configured with your credentials.
+    #    Run 'aws configure' and provide your access key, secret key, region, and output format.
+    # 3. Boto3 Library: The boto3 library must be installed. Install it using 'pip install boto3'.
+    # 4. VPC ID: Replace 'vpc-yourIDhere' with the actual VPC ID you wish to delete.
+
+    # Initialize AWS EC2 resources and client using boto3
     ec2 = boto3.resource('ec2')
     client = boto3.client('ec2')
 
@@ -16,7 +35,7 @@ def delete_vpc(vpc_id):
         print(f"Releasing Elastic IP {address['PublicIp']} with AllocationId {address['AllocationId']}")
         client.release_address(AllocationId=address['AllocationId'])
 
-    # Terminate EC2 instances
+    # Terminate EC2 instances in the VPC
     instances = client.describe_instances(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])
     for reservation in instances['Reservations']:
         for instance in reservation['Instances']:
@@ -26,7 +45,7 @@ def delete_vpc(vpc_id):
             waiter = client.get_waiter('instance_terminated')
             waiter.wait(InstanceIds=[instance_id])
 
-    # Delete NAT gateways
+    # Delete NAT gateways associated with the VPC
     nat_gateways = client.describe_nat_gateways(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])
     for nat_gateway in nat_gateways['NatGateways']:
         nat_gateway_id = nat_gateway['NatGatewayId']
@@ -35,14 +54,14 @@ def delete_vpc(vpc_id):
         waiter = client.get_waiter('nat_gateway_deleted')
         waiter.wait(NatGatewayIds=[nat_gateway_id])
 
-    # Detach and delete Internet Gateways
+    # Detach and delete Internet Gateways attached to the VPC
     for igw in vpc.internet_gateways.all():
         print(f"Detaching Internet Gateway {igw.id}")
         vpc.detach_internet_gateway(InternetGatewayId=igw.id)
         print(f"Deleting Internet Gateway {igw.id}")
         igw.delete()
 
-    # Delete network interfaces
+    # Delete network interfaces within the VPC
     network_interfaces = client.describe_network_interfaces(Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}])
     for interface in network_interfaces['NetworkInterfaces']:
         interface_id = interface['NetworkInterfaceId']
@@ -70,12 +89,12 @@ def delete_vpc(vpc_id):
             print(f"Deleting route table {rt.id}")
             rt.delete()
 
-    # Delete subnets
+    # Delete subnets in the VPC
     for subnet in vpc.subnets.all():
         print(f"Deleting subnet {subnet.id}")
         subnet.delete()
 
-    # Delete security groups
+    # Delete security groups within the VPC
     for sg in vpc.security_groups.all():
         if sg.group_name != 'default':
             try:
@@ -87,13 +106,13 @@ def delete_vpc(vpc_id):
                 else:
                     raise
 
-    # Delete network ACLs
+    # Delete network ACLs in the VPC
     for acl in vpc.network_acls.all():
         if not acl.is_default:
             print(f"Deleting network ACL {acl.id}")
             acl.delete()
 
-    # Detach and delete Internet Gateways (try again to ensure all dependencies are cleared)
+    # Detach and delete Internet Gateways (second attempt to ensure all dependencies are cleared)
     for igw in vpc.internet_gateways.all():
         try:
             print(f"Final attempt to detach and delete Internet Gateway {igw.id}")
@@ -102,7 +121,7 @@ def delete_vpc(vpc_id):
         except ClientError as e:
             print(f"Error detaching/deleting IGW: {e}")
 
-    # Delete the VPC
+    # Delete the VPC itself
     try:
         print(f"Deleting VPC {vpc_id}")
         vpc.delete()
@@ -112,5 +131,5 @@ def delete_vpc(vpc_id):
 
 
 # Replace with your VPC ID
-vpc_id = 'vpc-0915b9cda05e57a5c'
+vpc_id = 'vpc-yourIDhere'
 delete_vpc(vpc_id)
